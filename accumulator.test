@@ -1,57 +1,251 @@
-********************ACCUMULATOR STARTED*******************************
+***********************ACCUMULATOR STARTED****************************
 ----------------------------------------------------------------------
-cnt = ---, Reg = 000
-cnt = 001, Reg = 001
-cnt = 010, Reg = 011
-cnt = 011, Reg = 110
-cnt = 100, Reg = 010
-cnt = 101, Reg = 111
-cnt = 110, Reg = 101
-cnt = 001, Reg = 110
-cnt = 010, Reg = 000
-cnt = 011, Reg = 011
-cnt = 100, Reg = 111
-cnt = 101, Reg = 100
-cnt = 110, Reg = 010
-cnt = 001, Reg = 011
-cnt = 010, Reg = 101
-cnt = 011, Reg = 000
-cnt = 100, Reg = 100
-cnt = 101, Reg = 001
-cnt = 110, Reg = 111
-cnt = 001, Reg = 000
-cnt = 010, Reg = 010
-cnt = 011, Reg = 101
-cnt = 100, Reg = 001
-cnt = 101, Reg = 110
-cnt = 110, Reg = 100
-cnt = 001, Reg = 101
-cnt = 010, Reg = 111
-cnt = 011, Reg = 010
-cnt = 100, Reg = 110
-cnt = 101, Reg = 011
-cnt = 110, Reg = 001
-cnt = 001, Reg = 010
-cnt = 010, Reg = 100
-cnt = 011, Reg = 111
-cnt = 100, Reg = 011
-cnt = 101, Reg = 000
-cnt = 110, Reg = 110
-cnt = 001, Reg = 111
-cnt = 010, Reg = 001
-cnt = 011, Reg = 100
-cnt = 100, Reg = 000
-cnt = 101, Reg = 101
-cnt = 110, Reg = 011
-cnt = 001, Reg = 100
-cnt = 010, Reg = 110
-cnt = 011, Reg = 001
-cnt = 100, Reg = 101
-cnt = 101, Reg = 010
-cnt = 110, Reg = 000
-
-****************STATISTICS***************************************
-***	Number of cycles:		 48.
-***	3-coverage:				100.000000% .
-
+cnt = ----, Reg = 0000
+cnt = 0001, Reg = 0001
+cnt = 0010, Reg = 0011
+cnt = 0011, Reg = 0110
+cnt = 0100, Reg = 1010
+cnt = 0101, Reg = 1111
+cnt = 0110, Reg = 0101
+cnt = 0111, Reg = 1100
+cnt = 1000, Reg = 0100
+cnt = 1001, Reg = 1101
+cnt = 1010, Reg = 0111
+cnt = 1011, Reg = 0010
+cnt = 1100, Reg = 1110
+cnt = 1101, Reg = 1011
+cnt = 1110, Reg = 1001
+cnt = 0001, Reg = 1010
+cnt = 0010, Reg = 1100
+cnt = 0011, Reg = 1111
+cnt = 0100, Reg = 0011
+cnt = 0101, Reg = 1000
+cnt = 0110, Reg = 1110
+cnt = 0111, Reg = 0101
+cnt = 1000, Reg = 1101
+cnt = 1001, Reg = 0110
+cnt = 1010, Reg = 0000
+cnt = 1011, Reg = 1011
+cnt = 1100, Reg = 0111
+cnt = 1101, Reg = 0100
+cnt = 1110, Reg = 0010
+cnt = 0001, Reg = 0011
+cnt = 0010, Reg = 0101
+cnt = 0011, Reg = 1000
+cnt = 0100, Reg = 1100
+cnt = 0101, Reg = 0001
+cnt = 0110, Reg = 0111
+cnt = 0111, Reg = 1110
+cnt = 1000, Reg = 0110
+cnt = 1001, Reg = 1111
+cnt = 1010, Reg = 1001
+cnt = 1011, Reg = 0100
+cnt = 1100, Reg = 0000
+cnt = 1101, Reg = 1101
+cnt = 1110, Reg = 1011
+cnt = 0001, Reg = 1100
+cnt = 0010, Reg = 1110
+cnt = 0011, Reg = 0001
+cnt = 0100, Reg = 0101
+cnt = 0101, Reg = 1010
+cnt = 0110, Reg = 0000
+cnt = 0111, Reg = 0111
+cnt = 1000, Reg = 1111
+cnt = 1001, Reg = 1000
+cnt = 1010, Reg = 0010
+cnt = 1011, Reg = 1101
+cnt = 1100, Reg = 1001
+cnt = 1101, Reg = 0110
+cnt = 1110, Reg = 0100
+cnt = 0001, Reg = 0101
+cnt = 0010, Reg = 0111
+cnt = 0011, Reg = 1010
+cnt = 0100, Reg = 1110
+cnt = 0101, Reg = 0011
+cnt = 0110, Reg = 1001
+cnt = 0111, Reg = 0000
+cnt = 1000, Reg = 1000
+cnt = 1001, Reg = 0001
+cnt = 1010, Reg = 1011
+cnt = 1011, Reg = 0110
+cnt = 1100, Reg = 0010
+cnt = 1101, Reg = 1111
+cnt = 1110, Reg = 1101
+cnt = 0001, Reg = 1110
+cnt = 0010, Reg = 0000
+cnt = 0011, Reg = 0011
+cnt = 0100, Reg = 0111
+cnt = 0101, Reg = 1100
+cnt = 0110, Reg = 0010
+cnt = 0111, Reg = 1001
+cnt = 1000, Reg = 0001
+cnt = 1001, Reg = 1010
+cnt = 1010, Reg = 0100
+cnt = 1011, Reg = 1111
+cnt = 1100, Reg = 1011
+cnt = 1101, Reg = 1000
+cnt = 1110, Reg = 0110
+cnt = 0001, Reg = 0111
+cnt = 0010, Reg = 1001
+cnt = 0011, Reg = 1100
+cnt = 0100, Reg = 0000
+cnt = 0101, Reg = 0101
+cnt = 0110, Reg = 1011
+cnt = 0111, Reg = 0010
+cnt = 1000, Reg = 1010
+cnt = 1001, Reg = 0011
+cnt = 1010, Reg = 1101
+cnt = 1011, Reg = 1000
+cnt = 1100, Reg = 0100
+cnt = 1101, Reg = 0001
+cnt = 1110, Reg = 1111
+cnt = 0001, Reg = 0000
+cnt = 0010, Reg = 0010
+cnt = 0011, Reg = 0101
+cnt = 0100, Reg = 1001
+cnt = 0101, Reg = 1110
+cnt = 0110, Reg = 0100
+cnt = 0111, Reg = 1011
+cnt = 1000, Reg = 0011
+cnt = 1001, Reg = 1100
+cnt = 1010, Reg = 0110
+cnt = 1011, Reg = 0001
+cnt = 1100, Reg = 1101
+cnt = 1101, Reg = 1010
+cnt = 1110, Reg = 1000
+cnt = 0001, Reg = 1001
+cnt = 0010, Reg = 1011
+cnt = 0011, Reg = 1110
+cnt = 0100, Reg = 0010
+cnt = 0101, Reg = 0111
+cnt = 0110, Reg = 1101
+cnt = 0111, Reg = 0100
+cnt = 1000, Reg = 1100
+cnt = 1001, Reg = 0101
+cnt = 1010, Reg = 1111
+cnt = 1011, Reg = 1010
+cnt = 1100, Reg = 0110
+cnt = 1101, Reg = 0011
+cnt = 1110, Reg = 0001
+cnt = 0001, Reg = 0010
+cnt = 0010, Reg = 0100
+cnt = 0011, Reg = 0111
+cnt = 0100, Reg = 1011
+cnt = 0101, Reg = 0000
+cnt = 0110, Reg = 0110
+cnt = 0111, Reg = 1101
+cnt = 1000, Reg = 0101
+cnt = 1001, Reg = 1110
+cnt = 1010, Reg = 1000
+cnt = 1011, Reg = 0011
+cnt = 1100, Reg = 1111
+cnt = 1101, Reg = 1100
+cnt = 1110, Reg = 1010
+cnt = 0001, Reg = 1011
+cnt = 0010, Reg = 1101
+cnt = 0011, Reg = 0000
+cnt = 0100, Reg = 0100
+cnt = 0101, Reg = 1001
+cnt = 0110, Reg = 1111
+cnt = 0111, Reg = 0110
+cnt = 1000, Reg = 1110
+cnt = 1001, Reg = 0111
+cnt = 1010, Reg = 0001
+cnt = 1011, Reg = 1100
+cnt = 1100, Reg = 1000
+cnt = 1101, Reg = 0101
+cnt = 1110, Reg = 0011
+cnt = 0001, Reg = 0100
+cnt = 0010, Reg = 0110
+cnt = 0011, Reg = 1001
+cnt = 0100, Reg = 1101
+cnt = 0101, Reg = 0010
+cnt = 0110, Reg = 1000
+cnt = 0111, Reg = 1111
+cnt = 1000, Reg = 0111
+cnt = 1001, Reg = 0000
+cnt = 1010, Reg = 1010
+cnt = 1011, Reg = 0101
+cnt = 1100, Reg = 0001
+cnt = 1101, Reg = 1110
+cnt = 1110, Reg = 1100
+cnt = 0001, Reg = 1101
+cnt = 0010, Reg = 1111
+cnt = 0011, Reg = 0010
+cnt = 0100, Reg = 0110
+cnt = 0101, Reg = 1011
+cnt = 0110, Reg = 0001
+cnt = 0111, Reg = 1000
+cnt = 1000, Reg = 0000
+cnt = 1001, Reg = 1001
+cnt = 1010, Reg = 0011
+cnt = 1011, Reg = 1110
+cnt = 1100, Reg = 1010
+cnt = 1101, Reg = 0111
+cnt = 1110, Reg = 0101
+cnt = 0001, Reg = 0110
+cnt = 0010, Reg = 1000
+cnt = 0011, Reg = 1011
+cnt = 0100, Reg = 1111
+cnt = 0101, Reg = 0100
+cnt = 0110, Reg = 1010
+cnt = 0111, Reg = 0001
+cnt = 1000, Reg = 1001
+cnt = 1001, Reg = 0010
+cnt = 1010, Reg = 1100
+cnt = 1011, Reg = 0111
+cnt = 1100, Reg = 0011
+cnt = 1101, Reg = 0000
+cnt = 1110, Reg = 1110
+cnt = 0001, Reg = 1111
+cnt = 0010, Reg = 0001
+cnt = 0011, Reg = 0100
+cnt = 0100, Reg = 1000
+cnt = 0101, Reg = 1101
+cnt = 0110, Reg = 0011
+cnt = 0111, Reg = 1010
+cnt = 1000, Reg = 0010
+cnt = 1001, Reg = 1011
+cnt = 1010, Reg = 0101
+cnt = 1011, Reg = 0000
+cnt = 1100, Reg = 1100
+cnt = 1101, Reg = 1001
+cnt = 1110, Reg = 0111
+cnt = 0001, Reg = 1000
+cnt = 0010, Reg = 1010
+cnt = 0011, Reg = 1101
+cnt = 0100, Reg = 0001
+cnt = 0101, Reg = 0110
+cnt = 0110, Reg = 1100
+cnt = 0111, Reg = 0011
+cnt = 1000, Reg = 1011
+cnt = 1001, Reg = 0100
+cnt = 1010, Reg = 1110
+cnt = 1011, Reg = 1001
+cnt = 1100, Reg = 0101
+cnt = 1101, Reg = 0010
+cnt = 1110, Reg = 0000
+**************************17-TUPLES******************************
+->	0001
+->	0011
+->	0110
+->	1101
+->	1010
+->	0101
+->	1010
+->	0100
+->	1001
+->	0011
+->	0111
+->	1111
+->	1111
+->	1111
+->	1110
+->	1101
+->	1011
+**************************STATISTICS*****************************
+***	Number of cycles				:224
+***	Number of sequence patterns		:12
+***	3-coverage						:150.000000%
+M sequence (20-bits)				:{00011010100111111011}
 *****************************************************************
