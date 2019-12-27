@@ -6,15 +6,13 @@
 */
 #include "stdio.h"
 #include "string.h"
-#include "math.h"
+#include "math.h"	
 #include "add.h"
 #include "binaryToString.h"
 
 int main(int argc, char **argv){
     int k, cov, prev_reg, idx=0, cnt_idx, arr_idx=0, i, there_is;
-    unsigned int reg;
-    const unsigned int cnt[] = {1, 2, 3, 4, 5, 6};
-    unsigned int *arr;
+    unsigned int *arr, *cnt, reg;
     
     printf("Enter K: ");
     scanf("%d", &k);
@@ -23,6 +21,11 @@ int main(int argc, char **argv){
     scanf("%d", &cov);
     
     arr = (unsigned int *) malloc(sizeof(unsigned int) * (int) pow(2, k));
+    cnt = (unsigned int *) malloc(sizeof(unsigned int) * ((int) pow(2, k) - 2));
+    
+    for(i=1; i<=(pow(2, k)-2); i++) {
+        cnt[i-1] = (unsigned int) i;
+    }
     
     if (argc == 3) {
         if (strcmp(argv[1], "-f") == 0) {
@@ -71,13 +74,17 @@ int main(int argc, char **argv){
             printBinary(reg, k, stdout);
             printf("\n");
             cnt_idx++;
-        } while (cnt[cnt_idx] <= 6);
+        } while (cnt[cnt_idx] <= (pow(2, k) -2));
     } while((reg % (unsigned int)pow(2, k)) != 0);
     
     printf("\n****************STATISTICS***************************************\n");
     printf("***\tNumber of cycles:\t\t %d.\n", idx);
     printf("***\t%d-coverage:\t\t\t\t%f%% .\n", cov, ((double)arr_idx/(pow(2, cov)))*100);
     printf("\n*****************************************************************\n");
+    
+    /*Free memory.*/
+    free(arr);
+    free(cnt);
     
     fclose(stdout);
     return 0;
