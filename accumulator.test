@@ -1,0 +1,57 @@
+********************ACCUMULATOR STARTED*******************************
+----------------------------------------------------------------------
+cnt = ---, Reg = 000
+cnt = 001, Reg = 001
+cnt = 010, Reg = 011
+cnt = 011, Reg = 110
+cnt = 100, Reg = 010
+cnt = 101, Reg = 111
+cnt = 110, Reg = 101
+cnt = 001, Reg = 110
+cnt = 010, Reg = 000
+cnt = 011, Reg = 011
+cnt = 100, Reg = 111
+cnt = 101, Reg = 100
+cnt = 110, Reg = 010
+cnt = 001, Reg = 011
+cnt = 010, Reg = 101
+cnt = 011, Reg = 000
+cnt = 100, Reg = 100
+cnt = 101, Reg = 001
+cnt = 110, Reg = 111
+cnt = 001, Reg = 000
+cnt = 010, Reg = 010
+cnt = 011, Reg = 101
+cnt = 100, Reg = 001
+cnt = 101, Reg = 110
+cnt = 110, Reg = 100
+cnt = 001, Reg = 101
+cnt = 010, Reg = 111
+cnt = 011, Reg = 010
+cnt = 100, Reg = 110
+cnt = 101, Reg = 011
+cnt = 110, Reg = 001
+cnt = 001, Reg = 010
+cnt = 010, Reg = 100
+cnt = 011, Reg = 111
+cnt = 100, Reg = 011
+cnt = 101, Reg = 000
+cnt = 110, Reg = 110
+cnt = 001, Reg = 111
+cnt = 010, Reg = 001
+cnt = 011, Reg = 100
+cnt = 100, Reg = 000
+cnt = 101, Reg = 101
+cnt = 110, Reg = 011
+cnt = 001, Reg = 100
+cnt = 010, Reg = 110
+cnt = 011, Reg = 001
+cnt = 100, Reg = 101
+cnt = 101, Reg = 010
+cnt = 110, Reg = 000
+
+****************STATISTICS***************************************
+***	Number of cycles:		 48.
+***	3-coverage:				100.000000% .
+
+*****************************************************************

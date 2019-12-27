@@ -1,34 +1,84 @@
-#include <stdio.h>
-#include "nor.h"
-#include "and.h"
+/*
+ * Authors: Oulis Evangelos & Kalliopi Voudouri
+ *          711151051         46577
+ * Subject: C progam that implements an accumulator which
+ *             is powered from an k-bit counter.
+*/
+#include "stdio.h"
+#include "string.h"
+#include "math.h"
+#include "add.h"
+#include "binaryToString.h"
 
 int main(int argc, char **argv){
-    int k, cav, prev_reg, idx=0, cnt_idx, arr_idx=0;
+    int k, cov, prev_reg, idx=0, cnt_idx, arr_idx=0, i, there_is;
     unsigned int reg;
     const unsigned int cnt[] = {1, 2, 3, 4, 5, 6};
-    unsigned int arr[100];
+    unsigned int *arr;
     
-    printf("Enter K = ");
+    printf("Enter K: ");
     scanf("%d", &k);
     
-    printf("Enter n-bit cavarage = ");
-    scanf("%d", &cav);
+    printf("Enter n-bit coverage: ");
+    scanf("%d", &cov);
     
-    reg++;
+    arr = (unsigned int *) malloc(sizeof(unsigned int) * (int) pow(2, k));
+    
+    if (argc == 3) {
+        if (strcmp(argv[1], "-f") == 0) {
+            stdout = fopen(argv[2], "w");
+        }
+    }
+    
+    printf("********************ACCUMULATOR STARTED*******************************\n");
+    printf("----------------------------------------------------------------------\n");
+    /*Initialize the zero at Register.*/
+    reg = 0;
+    arr[arr_idx++] = (unsigned int) 0;
+    
+    /*
+     * Start Calculate the Accumularor output using counter.
+     * Register starts from 0
+    */
+    printf("cnt = ");
+    for(i=0; i<k; i++) {
+        printf("-");
+    }
+    printf(", Reg = ");
+    printBinary(reg, k, stdout);
+    printf("\n");
     do {
         cnt_idx = 0;
         do {
-            idx += 1;
-            reg = and(reg, cnt[cnt_idx], 3);
+            idx++;
             
-            arr[arr_idx++] = reg >> k;
+            there_is = 0;
+            reg = add(reg, cnt[cnt_idx], 3);
+            
+            for (i=0; i<arr_idx; i++) {              
+                if (arr[i] == (reg % (unsigned int)pow(2, k))) {
+                    there_is = 1;
+                }
+            }
+            
+            if (there_is != 1) {
+                arr[arr_idx++] = (reg % (unsigned int)pow(2, k));
+            }
                 
-            printf("cnt = %d, Reg = %d\n", cnt[cnt_idx], reg);
+            printf("cnt = ");
+            printBinary(cnt[cnt_idx], k, stdout);
+            printf(", Reg = ");
+            printBinary(reg, k, stdout);
+            printf("\n");
             cnt_idx++;
         } while (cnt[cnt_idx] <= 6);
-    } while(nor(reg, 1, 3) == 6);
+    } while((reg % (unsigned int)pow(2, k)) != 0);
     
-    printf("Number of cycles = %d.\n", idx);
+    printf("\n****************STATISTICS***************************************\n");
+    printf("***\tNumber of cycles:\t\t %d.\n", idx);
+    printf("***\t%d-coverage:\t\t\t\t%f%% .\n", cov, ((double)arr_idx/(pow(2, cov)))*100);
+    printf("\n*****************************************************************\n");
     
+    fclose(stdout);
     return 0;
 }

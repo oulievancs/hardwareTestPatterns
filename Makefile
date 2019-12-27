@@ -1,5 +1,5 @@
 all:
-	gcc -o prg prg.c nor.c and.c -lm -O3
-	./prg
+	gcc -o prg prg.c add.c binaryToString.c -lm -O3
+	./prg -f accumulator.test
 clean:
 	rm prg
