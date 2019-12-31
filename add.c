@@ -1,3 +1,8 @@
+/*
+ * Authors: Oulis Evangelos & Kalliopi Voudouri
+ *          711151051         46577
+ * Subject: C function for bitwise Addition operator.
+*/
 #include "stdio.h"
 #include "math.h"
 #include "add.h"

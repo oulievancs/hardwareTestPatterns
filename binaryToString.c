@@ -1,3 +1,8 @@
+/*
+ * Authors: Oulis Evangelos & Kalliopi Voudouri
+ *          711151051         46577
+ * Subject: C functions for Binary printing and String builder from number operators.
+*/
 #include "stdio.h"
 #include "stdlib.h"
 #include "binaryToString.h"
