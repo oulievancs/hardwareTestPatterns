@@ -5,6 +5,7 @@
  *             is powered from an k-bit counter.
 */
 #include "stdio.h"
+#include "stdlib.h"
 #include "string.h"
 #include "math.h"	
 #include "add.h"
@@ -26,10 +27,17 @@ int main(int argc, char **argv){
         scanf("%d", &M);
     } while (M <= cov);
     
-    arr = (char **) malloc(sizeof(char *) * (int) pow(2, k));
+    tuples = (M-cov)+1;
+    
+    arr = (char **) malloc(sizeof(char *) * tuples);
     cnt = (unsigned int *) malloc(sizeof(unsigned int) * ((int) pow(2, k) - 2));
     reg1 = (char *) malloc(sizeof(char) * k);
     mSeq = (char *) malloc(sizeof(char) * M);
+    
+    if (arr == NULL || cnt == NULL || reg1 == NULL || mSeq == NULL) {
+        fprintf(stderr, "There was a problem on memory allocation.\n");
+        exit(10);
+    }
     
     for(i=1; i<=(pow(2, k)-2); i++) {
         cnt[i-1] = (unsigned int) i;
@@ -38,6 +46,11 @@ int main(int argc, char **argv){
     if (argc == 3) {
         if (strcmp(argv[1], "-f") == 0) {
             stdout = fopen(argv[2], "w");
+        }
+        
+        if (stdout == NULL) {
+            fprintf(stderr, "There was a problem on file opening.\n");
+            exit(11);
         }
     }
     
@@ -76,64 +89,69 @@ int main(int argc, char **argv){
                 mSeq[mSeq_idx++] = reg1[k-1];
             }
             cnt_idx++;
-        } while (cnt[cnt_idx] <= (pow(2, k) - 2));
+        } while (cnt[cnt_idx] <= (unsigned int)(pow(2, k) - 2));
     } while((reg % (unsigned int)pow(2, k)) != 0);
     
-    tuples = M-k+1;
     printf("**************************%d-TUPLES******************************\n", tuples);
     
-    for(i=0; i<tuples; i++) {
-        printf("->\t");
-        for(j=0; j<k; j++) {
-            printf("%c", mSeq[i+j]);
-        }
-        printf("\n");
-        
-        /*
-         * Check four multipled patterns.
-         * If current parrern is already counted, throw it away.
-        */
-        for (ii=0; ii<arr_idx; ii++) {
-            there_is = 1;
-            for (j=0; j<k; j++) {
-                if (arr[ii][j] != mSeq[i+j]) {
-                    there_is = 0;
+    if (M <= idx) {
+        for(i=0; i<tuples; i++) {
+            printf("->\t");
+            for(j=0; j<cov; j++) {
+                printf("%c", mSeq[i+j]);
+            }
+            
+            /*
+             * Check four multipled patterns.
+             * If current parrern is already counted, throw it away.
+            */
+            for (ii=0; ii<arr_idx; ii++) {
+                there_is = 1;
+
+                for (j=0; j<cov; j++) {
+                    if (arr[ii][j] != mSeq[i+j]) {
+                        there_is = 0;
+                        break;
+                    }
+                }
+                if (there_is == 1) {
                     break;
                 }
             }
-            if (there_is == 1) {
-                break;
+            
+            /*
+             * If current pattern isn't counted or is the 1st pattern
+             *   then we dave it at "arr" array.
+            */
+            if (there_is == 0 || arr_idx == 0) {
+                arr[arr_idx++] = &mSeq[i];
+            } else {
+                printf(" *");
             }
+            printf("\n");
         }
         
-        /*
-         * If current pattern isn't counted or is the 1st pattern
-         *   then we dave it at "arr" array.
-        */
-        if (there_is == 0 || arr_idx == 0) {
-            arr[arr_idx++] = &mSeq[i];
+        printf("**************************STATISTICS*****************************\n");
+        printf("***\tNumber of cycles           :%d\n", idx);
+        printf("***\tNumber of sequence patterns:%d\n", arr_idx);
+        printf("***\t%d-coverage                 :%f%%\n", cov, ((double)arr_idx/(pow(2, cov)))*100);
+        
+        printf("M sequence (%d-bits)           :{", M);
+        for (i=0; i<M; i++) {
+            printf("%c", mSeq[i]);
         }
+        printf("}\n");
+    } else {
+        printf("Message: You must Provide M sequence less or equal than cycles of Accumulator.\n");
     }
-    
-    printf("**************************STATISTICS*****************************\n");
-    printf("***\tNumber of cycles\t\t\t\t:%d\n", idx);
-    printf("***\tNumber of sequence patterns\t\t:%d\n", arr_idx);
-    printf("***\t%d-coverage\t\t\t\t\t\t:%f%%\n", cov, ((double)arr_idx/(pow(2, cov)))*100);
-    
-    printf("M sequence (%d-bits)\t\t\t\t:{", M);
-    for (i=0; i<M; i++) {
-        printf("%c", mSeq[i]);
-    }
-    printf("}\n");
     
     printf("*****************************************************************\n");
     
+    fclose(stdout);
     /*Free memory.*/
-    free(arr);
     free(cnt);
     free(reg1);
     free(mSeq);
-    
-    fclose(stdout);
+    free(arr);
     return 0;
 }
