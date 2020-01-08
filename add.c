@@ -7,7 +7,7 @@
 #include "math.h"
 #include "add.h"
 
-unsigned int ADD(unsigned int a, unsigned int b, unsigned int n) {
+unsigned int ADD(unsigned long long int a, unsigned long long int b) {
 	// Iterate till there is no carry
     while (b != 0)
     {

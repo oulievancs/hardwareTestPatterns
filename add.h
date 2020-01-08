@@ -5,6 +5,6 @@
 #ifdef ADD_H_
 #define ADD_H_
 
-unsigned int ADD(unsigned int a, unsigned int b, unsigned int n);
+unsigned int ADD(unsigned long long int a, unsigned long long int b);
 
 #endif // ADD_H_

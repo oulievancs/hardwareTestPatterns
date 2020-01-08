@@ -1,0 +1,98 @@
+***********************ACCUMULATOR STARTED****************************
+----------------------------------------------------------------------
+cnt = , Reg = 000
+Round: 1, cnt = 001, Reg = 001
+Round: 2, cnt = 010, Reg = 011
+Round: 3, cnt = 011, Reg = 110
+Round: 4, cnt = 100, Reg = 010
+Round: 5, cnt = 101, Reg = 111
+Round: 6, cnt = 110, Reg = 101
+Round: 7, cnt = 001, Reg = 110
+Round: 8, cnt = 010, Reg = 000
+Round: 9, cnt = 011, Reg = 011
+Round: 10, cnt = 100, Reg = 111
+Round: 11, cnt = 101, Reg = 100
+Round: 12, cnt = 110, Reg = 010
+Round: 13, cnt = 001, Reg = 011
+Round: 14, cnt = 010, Reg = 101
+Round: 15, cnt = 011, Reg = 000
+Round: 16, cnt = 100, Reg = 100
+Round: 17, cnt = 101, Reg = 001
+Round: 18, cnt = 110, Reg = 111
+Round: 19, cnt = 001, Reg = 000
+Round: 20, cnt = 010, Reg = 010
+Round: 21, cnt = 011, Reg = 101
+Round: 22, cnt = 100, Reg = 001
+Round: 23, cnt = 101, Reg = 110
+Round: 24, cnt = 110, Reg = 100
+Round: 25, cnt = 001, Reg = 101
+Round: 26, cnt = 010, Reg = 111
+Round: 27, cnt = 011, Reg = 010
+Round: 28, cnt = 100, Reg = 110
+Round: 29, cnt = 101, Reg = 011
+Round: 30, cnt = 110, Reg = 001
+Round: 31, cnt = 001, Reg = 010
+Round: 32, cnt = 010, Reg = 100
+Round: 33, cnt = 011, Reg = 111
+Round: 34, cnt = 100, Reg = 011
+Round: 35, cnt = 101, Reg = 000
+Round: 36, cnt = 110, Reg = 110
+Round: 37, cnt = 001, Reg = 111
+Round: 38, cnt = 010, Reg = 001
+Round: 39, cnt = 011, Reg = 100
+Round: 40, cnt = 100, Reg = 000
+Round: 41, cnt = 101, Reg = 101
+Round: 42, cnt = 110, Reg = 011
+Round: 43, cnt = 001, Reg = 100
+Round: 44, cnt = 010, Reg = 110
+Round: 45, cnt = 011, Reg = 001
+Round: 46, cnt = 100, Reg = 101
+Round: 47, cnt = 101, Reg = 010
+Round: 48, cnt = 110, Reg = 000
+**************************45-TUPLES******************************
+->	0010
+->	0101
+->	1011
+->	0111
+->	1110
+->	1100
+->	1001
+->	0011
+->	0110
+->	1100 *
+->	1001 *
+->	0010 *
+->	0101 *
+->	1010
+->	0101 *
+->	1010 *
+->	0100
+->	1001 *
+->	0010 *
+->	0101 *
+->	1011 *
+->	0111 *
+->	1111
+->	1110 *
+->	1101
+->	1010 *
+->	0100 *
+->	1000
+->	0001
+->	0011 *
+->	0110 *
+->	1100 *
+->	1001 *
+->	0011 *
+->	0110 *
+->	1101 *
+->	1010 *
+->	0101 *
+->	1010 *
+->	0101 *
+->	1011 *
+->	0110 *
+->	1101 *
+->	1010 *
+->	0100 *
+*****************************************************************

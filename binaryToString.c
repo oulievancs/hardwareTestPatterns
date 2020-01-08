@@ -7,9 +7,9 @@
 #include "stdlib.h"
 #include "binaryToString.h"
 
-void printBinary(unsigned int number, int digits, FILE *fp) {
+void printBinary(unsigned long long int number, int digits, FILE *fp) {
     if (digits <= 0) {
-        fprintf(stderr, "*At printBinary(<usigned int>, <digits>, <FILE *>) you can't use digits as <= 0.\n");
+        fprintf(stderr, "*At printBinary(<usigned long long int>, <digits>, <FILE *>) you can't use digits as <= 0.\n");
         exit(1);
     }
     int i;
@@ -22,9 +22,9 @@ void printBinary(unsigned int number, int digits, FILE *fp) {
     }
 }
 
-void binaryToStr(unsigned int number, int digits, char *p) {
+void binaryToStr(unsigned int long long number, int digits, char *p) {
     if (digits <= 0) {
-        fprintf(stderr, "*At printBinary(<usigned int>, <digits>, <FILE *>) you can't use digits as <= 0.\n");
+        fprintf(stderr, "*At printBinary(<usigned long long int>, <digits>, <FILE *>) you can't use digits as <= 0.\n");
         exit(1);
     }
     int i;
