@@ -10,84 +10,178 @@
 #include "math.h"	
 #include "add.h"
 #include "binaryToString.h"
+#include "time.h"
+
+void printLogo(void);
 
 int main(int argc, char **argv){
     int k, cov;
-    int there_is, cir_read=0;
+    int there_is, test_b=0, work_b=0;
     unsigned long long int *cnt, cnt_idx, idx=0, mSeq_idx=0, arr_idx=0, tuples, reg, M, goal=0, test_cycle=1;
     unsigned long long int i, j, ii;
-    char *reg1, *mSeq, **arr, cir_name[30];
+    char *reg1, *mSeq, **arr, cir_name[30], signal[30];
+    clock_t start, end;
+    double cpu_time_used;
     
-    /*For output and log file Stream.*/
-    FILE *log, *out, *test;
+    /*For output file Stream.*/
+    FILE *test, *workb;
     
-    if (argc == 4) {
-        if (strcmp(argv[3], "-o") == 0) {
-            out = fopen(argv[4], "w");
+    /*
+     * Initialize the zero at Register.
+     */
+    reg = 0;
+    
+    printLogo();
+    
+    /************************************MENU***********************************************/
+    if (argc == 7) {
+        if (strcmp(argv[1], "-o") == 0) {
+            test = fopen(argv[2], "w");
             
-            if (out == NULL) {
+            if (test == NULL) {
                 fprintf(stderr, "There was a problem on file opening.\n");
                 exit(11);
             }
+            test_b = 1;
+        } else if (strcmp(argv[3], "-o") == 0) {
+            test = fopen(argv[4], "w");
+            
+            if (test == NULL) {
+                fprintf(stderr, "There was a problem on file opening.\n");
+                exit(12);
+            }
+            test_b = 1;
+        } else if (strcmp(argv[5], "-o") == 0) {
+            test = fopen(argv[6], "w");
+            
+            if (test == NULL) {
+                fprintf(stderr, "There was a problem on file opening.\n");
+                exit(13);
+            }
+            test_b = 1;
         }
         
         if (strcmp(argv[1], "-f") == 0) {
+            workb = fopen(argv[2], "w");
+            
+            if (workb == NULL) {
+                fprintf(stderr, "There was a problem on file opening.\n");
+                exit(14);
+            }
+            work_b=1;
+        } else if (strcmp(argv[3], "-f") == 0) {
+            workb = fopen(argv[4], "w");
+            
+            if (workb == NULL) {
+                fprintf(stderr, "There was a problem on file opening.\n");
+                exit(15);
+            }
+            work_b=1;
+        } else if (strcmp(argv[5], "-f") == 0) {
+            workb = fopen(argv[6], "w");
+            
+            if (workb == NULL) {
+                fprintf(stderr, "There was a problem on file opening.\n");
+                exit(16);
+            }
+            work_b=1;
+        }
+        
+        if (strcmp(argv[1], "-z") == 0) {
+            reg = (int) atoi(argv[2]);
+        } else if (strcmp(argv[3], "-z") == 0) {
+            reg = (int) atoi(argv[4]);
+        } else if (strcmp(argv[5], "-z") == 0) {
+            reg = (int) atoi(argv[6]);
+        }
+    } else if (argc == 5) {
+        if (strcmp(argv[1], "-o") == 0) {
             test = fopen(argv[2], "w");
-            cir_read = 1;
             
             if (test == NULL) {
                 fprintf(stderr, "There was a problem on file opening.\n");
-                exit(12);
+                exit(17);
             }
+            test_b = 1;
+        } else if (strcmp(argv[3], "-o") == 0) {
+            test = fopen(argv[4], "w");
             
-            out = stdout;
+            if (test == NULL) {
+                fprintf(stderr, "There was a problem on file opening.\n");
+                exit(18);
+            }
+            test_b = 1;
+        }
+        
+        if (strcmp(argv[1], "-d") == 0) {
+            workb = fopen(argv[4], "w");
+            
+            if (workb == NULL) {
+                fprintf(stderr, "There was a problem on file opening.\n");
+                exit(19);
+            }
+            work_b=1;
+        } else if (strcmp(argv[3], "-d") == 0) {
+            workb = fopen(argv[5], "w");
+            
+            if (workb == NULL) {
+                fprintf(stderr, "There was a problem on file opening.\n");
+                exit(20);
+            }
+            work_b=1;
+        }
+        
+        if (strcmp(argv[1], "-z") == 0) {
+            reg = (int) atoi(argv[2]);
+        } else if (strcmp(argv[3], "-z") == 0) {
+            reg = (int) atoi(argv[4]);
         }
     } else if (argc == 3) {
         if (strcmp(argv[1], "-o") == 0) {
-            out = fopen(argv[2], "w");
-            
-            if (out == NULL) {
-                fprintf(stderr, "There was a problem on file opening.\n");
-                exit(11);
-            }
-        } else if (strcmp(argv[1], "-f") == 0) {
             test = fopen(argv[2], "w");
-            cir_read = 1;
             
             if (test == NULL) {
                 fprintf(stderr, "There was a problem on file opening.\n");
-                exit(12);
+                exit(11);
             }
+            test_b = 1;
+        }
+        
+        if (strcmp(argv[1], "-d") == 0) {            
+            workb = fopen(argv[2], "w");
             
-            out = stdout;
+            if (workb == NULL) {
+                fprintf(stderr, "There was a problem on file opening.\n");
+                exit(13);
+            }
+            work_b=1;
+        }
+        
+        if (strcmp(argv[1], "-z") == 0) {
+            reg = (int) atoi(argv[2]);
         }
     } else {
-        out = stdout;
+        fprintf(stderr, "./prg -o <fsim output> -d <Do for Workbench> -r <start stage register>\n");
+        exit(13);
     }
     
-    if (cir_read != 1) {
-        printf("Give the circuit name: ");
-        scanf("%s", cir_name);
-        
-        test = fopen(cir_name, "w");
-        
-        if (test == NULL) {
-            fprintf(stderr, "There was a problem on file opening.\n");
-            exit(13);
-        }
-    }
+    printf("\n\n\n");
     
-    printf("Enter K: ");
+    if (work_b) {
+        printf("--Give Signal name: ");
+        scanf("%s", signal);
+    }
+    /***************************************************************************************/
+    /***************************************************************************************/
+    
+    printf("--Enter K: ");
     scanf("%d", &k);
     
-    printf("Enter n-bit coverage: ");
+    printf("--Enter n-bit coverage: ");
     scanf("%d", &cov);
     
-    /*do {
-        printf("Enter M sequence as bit(s): ");
-        scanf("%d", &M);
-    } while (M <= cov);*/
-    
+    printf("\n\n\n");
+        
     /*Calculate M sequence as Accumulator Cycles number.*/
     M = (unsigned long long int)pow(2, k)*(pow(2, k) - 2);
     /*Calculating tuples.*/
@@ -107,31 +201,14 @@ int main(int argc, char **argv){
         cnt[i-1] = (unsigned long long int) i;
     }
     
-    
-    log = fopen("accumulator.log", "w");
-    if (log == NULL) {
-        fprintf(stderr, "There was a problem on file opening. \"accumulator.log\"\n");
-        exit(12);
-    }
-    
-    fprintf(out, "***********************ACCUMULATOR STARTED****************************\n");
-    fprintf(out, "----------------------------------------------------------------------\n");
-    fprintf(log, "***********************ACCUMULATOR STARTED****************************\n");
-    fprintf(log, "----------------------------------------------------------------------\n");
-    /*Initialize the zero at Register.*/
-    reg = 0;
-    
+    printf("***********************ACCUMULATOR STARTED****************************\n");
+    printf("----------------------------------------------------------------------\n");
+        
     /*
-     * Start Calculate the Accumularor output using counter.
-     * Register starts from 0
+     * Turn the accumulator to zero.
+     * 
     */
-    fprintf(log, "cnt = ");
-    for(i=0; i<k; i++) {
-        printf("-");
-    }
-    fprintf(log, ", Reg = ");
-    printBinary(reg, k, log);
-    fprintf(log, "\n");
+    start = clock();    //start time.
     do {
         cnt_idx = 0;
         do {
@@ -139,11 +216,11 @@ int main(int argc, char **argv){
             
             reg = ADD(reg, cnt[cnt_idx]);
             
-            fprintf(log, "Round: %llu, cnt = ", idx);
-            printBinary(cnt[cnt_idx], k, log);
-            fprintf(log, ", Reg = ");
-            printBinary(reg, k, log);
-            fprintf(log, "\n");
+            /*printf("Round: %llu, cnt = ", idx);
+            printBinary(cnt[cnt_idx], k, stdout);
+            printf(", Reg = ");
+            printBinary(reg, k, stdout);
+            printf("\n");*/
             
             if (M > idx-1) {
                 binaryToStr(reg, k, reg1);
@@ -151,17 +228,18 @@ int main(int argc, char **argv){
                 mSeq[mSeq_idx++] = reg1[k-1];
             }
         } while (cnt[cnt_idx++] < (unsigned long long int)(pow(2, k) - 2));
-    } while((reg % (unsigned long long int)pow(2, k)) != 0);
+    } while(/*(reg % (unsigned long long int)pow(2, k)) != 0*/idx != M);
     
+    end = clock();      //stop time.
+    cpu_time_used = ((double) (end - start)) / CLOCKS_PER_SEC;      //calculate time duration.
     
-    
-    fprintf(log, "**************************%d-TUPLES******************************\n", tuples);
+    //printf("**************************%d-TUPLES******************************\n", tuples);
     
     if (M <= idx) {
         for(i=0; i<tuples; i++) {
-            fprintf(log, "->\t");
+            /*printf("->\t");
             for(j=0; j<cov; j++) {
-                fprintf(log, "%c", mSeq[i+j]);
+                printf("%c", mSeq[i+j]);
             }
             
             /*
@@ -189,49 +267,58 @@ int main(int argc, char **argv){
             if (there_is == 0 || arr_idx == 0) {
                 arr[arr_idx++] = &mSeq[i];
                 
-                fprintf(test, "\n%llu:", test_cycle++);
+                if (test_b) fprintf(test, "\n%llu:", test_cycle++);
+                if (work_b) fprintf(workb, "force -freeze %s ", signal);
                 for(j=0; j<cov; j++) {
-                    fprintf(test, "%c", mSeq[i+j]);
+                    if (test_b) fprintf(test, "%c", mSeq[i+j]);
+                    if (work_b) fprintf(workb, "%c", mSeq[i+j]);
                 }
-            } else {
-                fprintf(log, " *");
-            }
-            fprintf(log, "\n");
+                if (work_b) fprintf(workb, " 0\nrun\n");
+            }/* else {
+                printf(" *");
+            }*/
+            //printf("\n");
             
             if ((int)arr_idx/(int) (pow(2, cov))*100 != 100) {
                 goal++;
             }
         }
         
-        fprintf(out, "**************************STATISTICS*****************************\n");
-        fprintf(out, "***\tNumber of cycles           :%llu\n", idx);
-        fprintf(out, "***\tNumber of sequence patterns:%llu\n", arr_idx);
+        printf("****************************STATISTICS********************************\n");
+        printf("***\tNumber of cycles           :%llu\n", idx);
+        printf("***\tNumber of sequence patterns:%llu\n", arr_idx);
         if (((double) arr_idx/(pow(2, cov))*100) >= ((double) 100)) {
-            fprintf(out, "***\t100%% Reached at            :%llu\n", goal);
+            printf("***\t100%% Reached at            :%llu cycles\n", goal);
         } else {
-            fprintf(out, "***\t100%% not Reached.          :-\n");
+            printf("***\t100%% not Reached.          :-\n");
         }
-        fprintf(out, "***\t%d-coverage                 :%f%%\n", cov, (double) arr_idx/(pow(2, cov))*100);
+        printf("***\t%d-coverage                 :%f%%\n", cov, (double) arr_idx/(pow(2, cov))*100);
         
-        fprintf(out, "M sequence (%llu-bits)           :{", M);
-        /*for (i=0; i<M; i++) {
-            printf("%c", mSeq[i]);
-        }*/
-        fprintf(out, "}\n");
+        printf("***\tM sequence (%llu-bits)       :{}\n", M);
+        printf("***\tTime duration msec(s)      :%f\n", cpu_time_used*(double) 1000);
     } else {
         fprintf(stderr, "Message: You must Provide M sequence less or equal than cycles of Accumulator.\n");
     }
     
-    fprintf(log, "*****************************************************************\n");
-    fprintf(out, "*****************************************************************\n");
+    printf("**********************************************************************\n");
     
-    fclose(test);
-    fclose(out);
-    fclose(log);
+    if (test_b) fclose(test);
+    if (work_b) fclose(workb);
     /*Free memory.*/
     free(cnt);
     free(reg1);
     free(mSeq);
     free(arr);
     return 0;
+}
+
+void printLogo(void) {
+    
+    printf("\n\n\n");
+    printf("    **     **    **    **  **   **    **  **  **  **         **    ******    *****   ****\n");
+    printf("   *  *   **    **     **  **   ** ** **  **  **  **        *  *     **     **   **  ** **\n");
+    printf("  ****** **    **      **  **   **    **  **  **  **       ******    **     **   **  **** \n");
+    printf(" *      * **    **     **  **   **    **  **  **  **      *      *   **     **   **  **  ** \n");
+    printf("*        * **    **    ******   **    **  ******  ****** *        *  **      ****    **   ** \n");
+    printf("==============================================================================================\n");
 }
