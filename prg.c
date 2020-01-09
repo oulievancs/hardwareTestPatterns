@@ -113,7 +113,7 @@ int main(int argc, char **argv){
             test_b = 1;
         }
         
-        if (strcmp(argv[1], "-d") == 0) {
+        if (strcmp(argv[1], "-f") == 0) {
             workb = fopen(argv[4], "w");
             
             if (workb == NULL) {
@@ -121,7 +121,7 @@ int main(int argc, char **argv){
                 exit(19);
             }
             work_b=1;
-        } else if (strcmp(argv[3], "-d") == 0) {
+        } else if (strcmp(argv[3], "-f") == 0) {
             workb = fopen(argv[5], "w");
             
             if (workb == NULL) {
@@ -147,7 +147,7 @@ int main(int argc, char **argv){
             test_b = 1;
         }
         
-        if (strcmp(argv[1], "-d") == 0) {            
+        if (strcmp(argv[1], "-f") == 0) {            
             workb = fopen(argv[2], "w");
             
             if (workb == NULL) {
@@ -161,7 +161,7 @@ int main(int argc, char **argv){
             reg = (int) atoi(argv[2]);
         }
     } else {
-        fprintf(stderr, "./prg -o <fsim output> -d <Do for Workbench> -r <start stage register>\n");
+        fprintf(stderr, "./prg <-o> <fsim output> <-f> <Do script for Workbench> <-r> <start stage register>\n");
         exit(13);
     }
     
