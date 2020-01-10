@@ -17,11 +17,12 @@ void printLogo(void);
 int main(int argc, char **argv){
     int k, cov;
     int there_is, test_b=0, work_b=0;
-    unsigned long long int *cnt, cnt_idx, idx=0, mSeq_idx=0, arr_idx=0, tuples, reg, M, goal=0, test_cycle=1;
+    unsigned long long int /**cnt, */cnt_idx, idx=0, mSeq_idx=0, arr_idx=0, tuples, reg, M, goal=0, test_cycle=1;
+    unsigned long long int start_counter = 1;
     unsigned long long int i, j, ii;
     char *reg1, *mSeq, **arr, cir_name[30], signal[30];
     clock_t start, end;
-    double cpu_time_used;
+    double cpu_time_used, min_cycl_per = (double) 0, tmp_per;
     
     /*For output file Stream.*/
     FILE *test, *workb;
@@ -188,18 +189,18 @@ int main(int argc, char **argv){
     tuples = (M-cov)+1;
     
     arr = (char **) malloc(sizeof(char *) * tuples);
-    cnt = (unsigned long long int *) malloc(sizeof(unsigned long long int) * ((int) pow(2, k) - 2));
+    /*cnt = (unsigned long long int *) malloc(sizeof(unsigned long long int) * ((int) pow(2, k) - 2));*/
     reg1 = (char *) malloc(sizeof(char) * k);
     mSeq = (char *) malloc(sizeof(char) * M);
     
-    if (arr == NULL || cnt == NULL || reg1 == NULL || mSeq == NULL) {
+    if (arr == NULL ||/* cnt == NULL ||*/ reg1 == NULL || mSeq == NULL) {
         fprintf(stderr, "There was a problem on memory allocation.\n");
         exit(10);
     }
     
-    for(i=1; i<=(pow(2, k)-2); i++) {
+    /*for(i=1; i<=(pow(2, k)-2); i++) {
         cnt[i-1] = (unsigned long long int) i;
-    }
+    }*/
     
     printf("***********************ACCUMULATOR STARTED****************************\n");
     printf("----------------------------------------------------------------------\n");
@@ -210,14 +211,14 @@ int main(int argc, char **argv){
     */
     start = clock();    //start time.
     do {
-        cnt_idx = 0;
+        cnt_idx = start_counter;
         do {
             idx++;
             
-            reg = ADD(reg, cnt[cnt_idx]);
+            reg = ADD(reg, cnt_idx);
             
             /*printf("Round: %llu, cnt = ", idx);
-            printBinary(cnt[cnt_idx], k, stdout);
+            printBinary(cnt_idx, k, stdout);
             printf(", Reg = ");
             printBinary(reg, k, stdout);
             printf("\n");*/
@@ -227,7 +228,7 @@ int main(int argc, char **argv){
                 
                 mSeq[mSeq_idx++] = reg1[k-1];
             }
-        } while (cnt[cnt_idx++] < (unsigned long long int)(pow(2, k) - 2));
+        } while (cnt_idx++ < (unsigned long long int)(pow(2, k) - 2));
     } while(/*(reg % (unsigned long long int)pow(2, k)) != 0*/idx != M);
     
     end = clock();      //stop time.
@@ -279,23 +280,28 @@ int main(int argc, char **argv){
             }*/
             //printf("\n");
             
-            if ((int)arr_idx/(int) (pow(2, cov))*100 != 100) {
+            tmp_per = (double) arr_idx/(pow(2, cov))* (double) 100;
+            if (tmp_per > min_cycl_per) {
+                goal++;
+                min_cycl_per = tmp_per;
+            } else if (tmp_per == min_cycl_per && tmp_per != 100) {
                 goal++;
             }
         }
         
+        tmp_per = (double) arr_idx/(pow(2, cov))* (double) 100;
         printf("****************************STATISTICS********************************\n");
         printf("***\tNumber of cycles           :%llu\n", idx);
         printf("***\tNumber of sequence patterns:%llu\n", arr_idx);
         if (((double) arr_idx/(pow(2, cov))*100) >= ((double) 100)) {
-            printf("***\t100%% Reached at            :%llu cycles\n", goal);
+            printf("***\t100%% Reached at              :%llu cycles\n", --goal);
         } else {
-            printf("***\t100%% not Reached.          :-\n");
+            printf("***\t%.3f%% Reached at            :%llu cycles\n", tmp_per, --goal);
         }
-        printf("***\t%d-coverage                 :%f%%\n", cov, (double) arr_idx/(pow(2, cov))*100);
+        printf("***\t%d-coverage                   :%f%%\n", cov, tmp_per);
         
         printf("***\tM sequence (%llu-bits)       :{}\n", M);
-        printf("***\tTime duration msec(s)      :%f\n", cpu_time_used*(double) 1000);
+        printf("***\tTime duration msec(s)        :%f\n", cpu_time_used*(double) 1000);
     } else {
         fprintf(stderr, "Message: You must Provide M sequence less or equal than cycles of Accumulator.\n");
     }
@@ -305,7 +311,7 @@ int main(int argc, char **argv){
     if (test_b) fclose(test);
     if (work_b) fclose(workb);
     /*Free memory.*/
-    free(cnt);
+    /*free(cnt);*/
     free(reg1);
     free(mSeq);
     free(arr);
