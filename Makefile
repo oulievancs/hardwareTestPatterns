@@ -4,6 +4,6 @@
 # ------------------------------------------------------------
 all:
 	gcc -o prg prg.c add.c binaryToString.c -lm -O3 -w
-	./prg -o accumulator.test
+	./prg
 clean:
 	rm prg

@@ -163,7 +163,6 @@ int main(int argc, char **argv){
         }
     } else {
         fprintf(stderr, "./prg <-o> <fsim output> <-f> <Do script for Workbench> <-r> <start stage register>\n");
-        exit(13);
     }
     
     printf("\n\n\n");
