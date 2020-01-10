@@ -15,9 +15,9 @@
 void printLogo(void);
 
 int main(int argc, char **argv){
-    int k, cov;
+    int k, n;
     int there_is, test_b=0, work_b=0;
-    unsigned long long int /**cnt, */cnt_idx, idx=0, mSeq_idx=0, arr_idx=0, tuples, reg, M, goal=0, test_cycle=1;
+    unsigned long long int cnt_idx, idx=0, mSeq_idx=0, arr_idx=0, tuples, reg, M, goal=0, test_cycle=1;
     unsigned long long int start_counter = 1;
     unsigned long long int i, j, ii;
     char *reg1, *mSeq, **arr, cir_name[30], signal[30];
@@ -178,17 +178,16 @@ int main(int argc, char **argv){
     scanf("%d", &k);
     
     printf("--Enter n-bit coverage: ");
-    scanf("%d", &cov);
+    scanf("%d", &n);
     
     printf("\n\n\n");
         
     /*Calculate M sequence as Accumulator Cycles number.*/
     M = (unsigned long long int)pow(2, k)*(pow(2, k) - 2);
     /*Calculating tuples.*/
-    tuples = (M-cov)+1;
+    tuples = (M-n)+1;
     
     arr = (char **) malloc(sizeof(char *) * tuples);
-    /*cnt = (unsigned long long int *) malloc(sizeof(unsigned long long int) * ((int) pow(2, k) - 2));*/
     reg1 = (char *) malloc(sizeof(char) * k);
     mSeq = (char *) malloc(sizeof(char) * M);
     
@@ -237,25 +236,14 @@ int main(int argc, char **argv){
     
     if (M <= idx) {
         for(i=0; i<tuples; i++) {
-            /*printf("->\t");
-            for(j=0; j<cov; j++) {
-                printf("%c", mSeq[i+j]);
-            }
-            
             /*
              * Check four multipled patterns.
              * If current parrern is already counted, throw it away.
             */
+            there_is = 0;
             for (ii=0; ii<arr_idx; ii++) {
-                there_is = 1;
-
-                for (j=0; j<cov; j++) {
-                    if (arr[ii][j] != mSeq[i+j]) {
-                        there_is = 0;
-                        break;
-                    }
-                }
-                if (there_is == 1) {
+                if (strncmp(arr[ii], &mSeq[i], n * sizeof(char)) == 0) {
+                    there_is = 1;
                     break;
                 }
             }
@@ -269,17 +257,14 @@ int main(int argc, char **argv){
                 
                 if (test_b) fprintf(test, "\n%llu:", test_cycle++);
                 if (work_b) fprintf(workb, "force -freeze %s ", signal);
-                for(j=0; j<cov; j++) {
+                for(j=0; j<n; j++) {
                     if (test_b) fprintf(test, "%c", mSeq[i+j]);
                     if (work_b) fprintf(workb, "%c", mSeq[i+j]);
                 }
                 if (work_b) fprintf(workb, " 0\nrun\n");
-            }/* else {
-                printf(" *");
-            }*/
-            //printf("\n");
+            }
             
-            tmp_per = (double) arr_idx/(pow(2, cov))* (double) 100;
+            tmp_per = (double) arr_idx/(pow(2, n))* (double) 100;
             if (tmp_per > min_cycl_per) {
                 goal++;
                 min_cycl_per = tmp_per;
@@ -288,16 +273,15 @@ int main(int argc, char **argv){
             }
         }
         
-        tmp_per = (double) arr_idx/(pow(2, cov))* (double) 100;
         printf("****************************STATISTICS********************************\n");
         printf("***\tNumber of cycles           :%llu\n", idx);
         printf("***\tNumber of sequence patterns:%llu\n", arr_idx);
-        if (((double) arr_idx/(pow(2, cov))*100) >= ((double) 100)) {
+        if (((double) arr_idx/(pow(2, n))*100) >= (double) 100) {
             printf("***\t100%% Reached at              :%llu cycles\n", --goal);
         } else {
             printf("***\t%.3f%% Reached at            :%llu cycles\n", tmp_per, --goal);
         }
-        printf("***\t%d-coverage                   :%f%%\n", cov, tmp_per);
+        printf("***\t%d-coverage                   :%f%%\n", n, tmp_per);
         
         printf("***\tM sequence (%llu-bits)       :{}\n", M);
         printf("***\tTime duration msec(s)        :%f\n", cpu_time_used*(double) 1000);
