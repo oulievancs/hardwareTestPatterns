@@ -21,7 +21,7 @@ int main(int argc, char **argv){
     int k, n, ans;
     int there_is, test_b=0, work_b=0;
     unsigned long long int *cnt, cnt_idx=0, idx=0, mSeq_idx=0, arr_idx=0, tuples, reg, M, goal=0, test_cycle=1;
-    unsigned long long int start_counter = 0, stop, up_limit, N;
+    unsigned long long int start_counter = 0, stop, up_limit, N, N1;
     unsigned long long int i, j, ii;
     char *reg1, *mSeq, **arr, cir_name[30], signal[30];
     clock_t start, end;
@@ -182,28 +182,13 @@ int main(int argc, char **argv){
     
     printf("--Enter n-bit coverage: ");
     scanf("%d", &n);
-        
-    /*Calculate M sequence as Accumulator Cycles number.*/
-    M = (unsigned long long int)pow(2, k)*(pow(2, k) - 2);
-    /*Calculating tuples.*/
-    tuples = (M-n)+1;
     
-    N = (int) pow(2, k) - 2;
-    
-    arr = (char **) malloc(sizeof(char *) * tuples);
-    reg1 = (char *) malloc(sizeof(char) * k);
-    mSeq = (char *) malloc(sizeof(char) * M);
-    cnt = (unsigned long long int) malloc(sizeof(unsigned long long int) * N);
-    
-    
-    if (arr == NULL ||/* cnt == NULL ||*/ reg1 == NULL || mSeq == NULL) {
-        fprintf(stderr, "There was a problem on memory allocation.\n");
-        exit(10);
-    }
+    N = (unsigned long long int) pow(2, k) - 2;
+    N1 = (unsigned long long int) pow(2, k);
     
     printf("=====MENU=====\n");
     printf("Select a counter type:\n");
-    printf("[1]: Regular Counter.\n[2]: Gray Counter.\n[3]: Regular Counter with step.\n[4]: Add after N cycles (N-1).\n");
+    printf("[1]: Regular Counter.\n[2]: Gray Counter.\n[3]: Regular Counter with step.\n[4]: Add after N cycles (N-1).\n[5] 1,1,....,N-1 sequence counter.\n");
     
     do {
         printf("--Give option:\t");
@@ -211,34 +196,66 @@ int main(int argc, char **argv){
         
         switch(ans) {
             case 1:
+                cnt = (unsigned long long int) malloc(sizeof(unsigned long long int) * N);
                 counter(k, cnt);
                 break;
             case 2:
+                cnt = (unsigned long long int) malloc(sizeof(unsigned long long int) * N);
                 gray_code(k, cnt);
                 break;
             case 3:
+                cnt = (unsigned long long int) malloc(sizeof(unsigned long long int) * N);
                 counter(k, cnt);
                 break;
             case 4:
+                cnt = (unsigned long long int) malloc(sizeof(unsigned long long int) * N);
                 counter(k, cnt);
+                break;
+            case 5:
+                cnt = (unsigned long long int) malloc(sizeof(unsigned long long int) * N1);
+                counter1(k, cnt);
                 break;
             default:
                 printf("****False option.\n");
                 break;
         }
-    } while (!(ans == 1 || ans == 2 || ans == 3 || ans == 4));
+    } while (!(ans == 1 || ans == 2 || ans == 3 || ans == 4 || ans == 5));
     
     printf("\n\n\n");
     printf("***********************ACCUMULATOR STARTED****************************\n");
     printf("----------------------------------------------------------------------\n");
+        
+    /*Calculate M sequence as Accumulator Cycles number.*/
+    if (ans == 5) {
+        M = (unsigned long long int)N1 * N1;
+    } else {
+        M = (unsigned long long int)N1 * N;
+    }
+    /*Calculating tuples.*/
+    tuples = (M-n)+1;
+    
+    arr = (char **) malloc(sizeof(char *) * tuples);
+    reg1 = (char *) malloc(sizeof(char) * k);
+    mSeq = (char *) malloc(sizeof(char) * M);
+    
+    if (arr == NULL || /*cnt == NULL ||*/ reg1 == NULL || mSeq == NULL) {
+        fprintf(stderr, "There was a problem on memory allocation.\n");
+        exit(10);
+    }
         
     /*
      * Turn the accumulator to zero.
      * 
     */
     start = clock();    //start time.
-    stop = (unsigned long long int)(pow(2, k) - 2);
-    up_limit = (unsigned long long int) (pow(2, k) - 2);
+    if (ans == 5) {
+        stop = (unsigned long long int) N1;
+        up_limit = (unsigned long long int) N1;
+    } else {
+        stop = (unsigned long long int) N;
+        up_limit = (unsigned long long int) N;
+    }
+    
     do {
         cnt_idx = start_counter;
         do {
