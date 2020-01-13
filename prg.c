@@ -11,14 +11,17 @@
 #include "add.h"
 #include "binaryToString.h"
 #include "time.h"
+#include "unistd.h"
+#include "gray_code.h"
+#include "counter.h"
 
 void printLogo(void);
 
 int main(int argc, char **argv){
-    int k, n;
+    int k, n, ans;
     int there_is, test_b=0, work_b=0;
-    unsigned long long int cnt_idx, idx=0, mSeq_idx=0, arr_idx=0, tuples, reg, M, goal=0, test_cycle=1;
-    unsigned long long int start_counter = 1;
+    unsigned long long int *cnt, cnt_idx=0, idx=0, mSeq_idx=0, arr_idx=0, tuples, reg, M, goal=0, test_cycle=1;
+    unsigned long long int start_counter = 0, stop, up_limit, N;
     unsigned long long int i, j, ii;
     char *reg1, *mSeq, **arr, cir_name[30], signal[30];
     clock_t start, end;
@@ -179,27 +182,53 @@ int main(int argc, char **argv){
     
     printf("--Enter n-bit coverage: ");
     scanf("%d", &n);
-    
-    printf("\n\n\n");
         
     /*Calculate M sequence as Accumulator Cycles number.*/
     M = (unsigned long long int)pow(2, k)*(pow(2, k) - 2);
     /*Calculating tuples.*/
     tuples = (M-n)+1;
     
+    N = (int) pow(2, k) - 2;
+    
     arr = (char **) malloc(sizeof(char *) * tuples);
     reg1 = (char *) malloc(sizeof(char) * k);
     mSeq = (char *) malloc(sizeof(char) * M);
+    cnt = (unsigned long long int) malloc(sizeof(unsigned long long int) * N);
+    
     
     if (arr == NULL ||/* cnt == NULL ||*/ reg1 == NULL || mSeq == NULL) {
         fprintf(stderr, "There was a problem on memory allocation.\n");
         exit(10);
     }
     
-    /*for(i=1; i<=(pow(2, k)-2); i++) {
-        cnt[i-1] = (unsigned long long int) i;
-    }*/
+    printf("=====MENU=====\n");
+    printf("Select a counter type:\n");
+    printf("[1]: Regular Counter.\n[2]: Gray Counter.\n[3]: Regular Counter with step.\n[4]: Add after N cycles (N-1).\n");
     
+    do {
+        printf("--Give option:\t");
+        scanf("%d", &ans);
+        
+        switch(ans) {
+            case 1:
+                counter(k, cnt);
+                break;
+            case 2:
+                gray_code(k, cnt);
+                break;
+            case 3:
+                counter(k, cnt);
+                break;
+            case 4:
+                counter(k, cnt);
+                break;
+            default:
+                printf("****False option.\n");
+                break;
+        }
+    } while (!(ans == 1 || ans == 2 || ans == 3 || ans == 4));
+    
+    printf("\n\n\n");
     printf("***********************ACCUMULATOR STARTED****************************\n");
     printf("----------------------------------------------------------------------\n");
         
@@ -208,15 +237,16 @@ int main(int argc, char **argv){
      * 
     */
     start = clock();    //start time.
+    stop = (unsigned long long int)(pow(2, k) - 2);
+    up_limit = (unsigned long long int) (pow(2, k) - 2);
     do {
         cnt_idx = start_counter;
         do {
             idx++;
+            reg = ADD(reg, cnt[cnt_idx]);
             
-            reg = ADD(reg, cnt_idx);
-            
-            /*printf("Round: %llu, cnt = ", idx);
-            printBinary(cnt_idx, k, stdout);
+            /*printf("Round: %llu, cnt[%llu] = ", idx, cnt_idx);
+            printBinary(cnt[cnt_idx], k, stdout);
             printf(", Reg = ");
             printBinary(reg, k, stdout);
             printf("\n");*/
@@ -226,7 +256,15 @@ int main(int argc, char **argv){
                 
                 mSeq[mSeq_idx++] = reg1[k-1];
             }
-        } while (cnt_idx++ < (unsigned long long int)(pow(2, k) - 2));
+            cnt_idx = (++cnt_idx) % up_limit;
+        } while (!(cnt_idx == stop%up_limit));
+        
+        if (ans == 3) {
+            stop = (++stop) % up_limit;
+            start_counter = (++start_counter) % up_limit;
+        } else if (ans == 4) {
+            reg = ADD(reg, up_limit+1);
+        }
     } while(/*(reg % (unsigned long long int)pow(2, k)) != 0*/idx != M);
     
     end = clock();      //stop time.
