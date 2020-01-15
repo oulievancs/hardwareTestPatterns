@@ -21,7 +21,7 @@ int main(int argc, char **argv){
     int k, n, ans;
     int there_is, test_b=0, work_b=0;
     unsigned long long int *cnt, cnt_idx=0, idx=0, mSeq_idx=0, arr_idx=0, tuples, reg, M, goal=0, test_cycle=1;
-    unsigned long long int start_counter = 0, stop, up_limit, N, N1;
+    unsigned long long int start_counter = 0, stop, up_limit, N, N1, N2;
     unsigned long long int i, j, ii;
     char *reg1, *mSeq, **arr, cir_name[30], signal[30];
     clock_t start, end;
@@ -185,10 +185,11 @@ int main(int argc, char **argv){
     
     N = (unsigned long long int) pow(2, k) - 2;
     N1 = (unsigned long long int) pow(2, k);
+    N2 = (unsigned long long int) pow(2, k) - 1;
     
     printf("=====MENU=====\n");
     printf("Select a counter type:\n");
-    printf("[1]: Regular Counter.\n[2]: Gray Counter.\n[3]: Regular Counter with step.\n[4]: Add after N cycles (N-1).\n[5] 1,1,....,N-1 sequence counter.\n");
+    printf("[1]: Regular Counter.\n[2]: Gray Counter.\n[3]: Regular Counter with step.\n[4]: Add after N cycles (N-1).\n[5]: 1,1,....,N-1 sequence counter.\n[6]: LFSR counter.\n\n\n");
     
     do {
         printf("--Give option:\t");
@@ -215,11 +216,15 @@ int main(int argc, char **argv){
                 cnt = (unsigned long long int) malloc(sizeof(unsigned long long int) * N1);
                 counter1(k, cnt);
                 break;
+            case 6:
+                cnt = (unsigned long long int) malloc(sizeof(unsigned long long int) * N2);
+                lfsr_counter(k, cnt);
+                break;
             default:
                 printf("****False option.\n");
                 break;
         }
-    } while (!(ans == 1 || ans == 2 || ans == 3 || ans == 4 || ans == 5));
+    } while (!(ans == 1 || ans == 2 || ans == 3 || ans == 4 || ans == 5 || ans == 6));
     
     printf("\n\n\n");
     printf("***********************ACCUMULATOR STARTED****************************\n");
@@ -228,6 +233,8 @@ int main(int argc, char **argv){
     /*Calculate M sequence as Accumulator Cycles number.*/
     if (ans == 5) {
         M = (unsigned long long int)N1 * N1;
+    } else if (ans == 6) {
+        M = (unsigned long long int)N1 * N2;
     } else {
         M = (unsigned long long int)N1 * N;
     }
@@ -251,6 +258,9 @@ int main(int argc, char **argv){
     if (ans == 5) {
         stop = (unsigned long long int) N1;
         up_limit = (unsigned long long int) N1;
+    } else if (ans == 6) {
+        stop = (unsigned long long int) N2;
+        up_limit = (unsigned long long int) N2;
     } else {
         stop = (unsigned long long int) N;
         up_limit = (unsigned long long int) N;
@@ -348,8 +358,9 @@ int main(int argc, char **argv){
     
     if (test_b) fclose(test);
     if (work_b) fclose(workb);
+    
     /*Free memory.*/
-    /*free(cnt);*/
+    free(cnt);
     free(reg1);
     free(mSeq);
     free(arr);
