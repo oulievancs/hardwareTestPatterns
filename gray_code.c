@@ -1,5 +1,7 @@
-#include "stdio.h"
-#include "binaryToString.h"
+/*
+ * Authors: Oulis Evangelos & Kalliopi Voudouri
+ *          711151051         46577
+*/
 
 void gray_code(unsigned long long int n, unsigned long long int *counter) {
     unsigned long long int N = 1 << n, i, j=0;

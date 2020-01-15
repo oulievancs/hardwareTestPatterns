@@ -4,6 +4,10 @@
  * Subject: C progam that implements an accumulator which
  *             is powered from an k-bit counter.
 */
+
+/*
+ * Include all libraries.
+*/
 #include "stdio.h"
 #include "stdlib.h"
 #include "string.h"
@@ -14,9 +18,16 @@
 #include "unistd.h"
 #include "gray_code.h"
 #include "counter.h"
+#include "lfsr.h"
 
+/*
+ * Define Functions.
+*/
 void printLogo(void);
 
+/*
+ * Start main program.
+*/
 int main(int argc, char **argv){
     int k, n, ans;
     int there_is, test_b=0, work_b=0;
