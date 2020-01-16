@@ -29,7 +29,7 @@ void printLogo(void);
  * Start main program.
 */
 int main(int argc, char **argv){
-    int k, n, ans;
+    int k, n, ans, reached = 0;
     int there_is, test_b=0, work_b=0;
     unsigned long long int *cnt, cnt_idx=0, idx=0, mSeq_idx=0, arr_idx=0, tuples, reg, M, goal=0, test_cycle=1;
     unsigned long long int start_counter = 0, stop, up_limit, N, N1, N2;
@@ -228,7 +228,7 @@ int main(int argc, char **argv){
                 counter1(k, cnt);
                 break;
             case 6:
-                cnt = (unsigned long long int) malloc(sizeof(unsigned long long int) * N1);
+                cnt = (unsigned long long int) malloc(sizeof(unsigned long long int) * N2);
                 lfsr_counter(k, cnt);
                 break;
             case 7:
@@ -246,8 +246,10 @@ int main(int argc, char **argv){
     printf("----------------------------------------------------------------------\n");
         
     /*Calculate M sequence as Accumulator Cycles number.*/
-    if (ans == 5 || ans == 7 || ans == 6) {
+    if (ans == 5 || ans == 7) {
         M = (unsigned long long int)N1 * N1;
+    } else if (ans == 6) {
+        M = (unsigned long long int)N1 * N2;
     } else {
         M = (unsigned long long int)N1 * N;
     }
@@ -268,9 +270,12 @@ int main(int argc, char **argv){
      * 
     */
     start = clock();    //start time.
-    if (ans == 5 || ans == 7 || ans == 6) {
+    if (ans == 5 || ans == 7) {
         stop = (unsigned long long int) N1;
         up_limit = (unsigned long long int) N1;
+    } else if (ans == 6) {
+        stop = (unsigned long long int) N2;
+        up_limit = (unsigned long long int) N2;
     } else {
         stop = (unsigned long long int) N;
         up_limit = (unsigned long long int) N;
@@ -310,7 +315,7 @@ int main(int argc, char **argv){
     //printf("**************************%d-TUPLES******************************\n", tuples);
     
     if (M <= idx) {
-        for(i=0; i<tuples; i++) {
+        for(i=0; i<tuples && reached == 0; i++) {
             /*
              * Check four multipled patterns.
              * If current parrern is already counted, throw it away.
@@ -345,6 +350,10 @@ int main(int argc, char **argv){
                 min_cycl_per = tmp_per;
             } else if (tmp_per == min_cycl_per && tmp_per != 100) {
                 goal++;
+            }
+            
+            if (tmp_per == 100) {
+                reached = 1;
             }
         }
         
