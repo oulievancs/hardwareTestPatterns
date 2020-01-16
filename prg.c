@@ -200,7 +200,7 @@ int main(int argc, char **argv){
     
     printf("=====MENU=====\n");
     printf("Select a counter type:\n");
-    printf("[1]: Regular Counter.\n[2]: Gray Counter.\n[3]: Regular Counter with step.\n[4]: Add after N cycles (N-1).\n[5]: 1,1,....,N-1 sequence counter.\n[6]: LFSR counter.\n\n\n");
+    printf("[1]: Regular Counter.\n[2]: Gray Counter.\n[3]: Regular Counter with step.\n[4]: Add after N cycles (N-1).\n[5]: 1,1,....,N-1 sequence counter.\n[6]: LFSR counter.\n[7]: NFSR counter.\n\n\n");
     
     do {
         printf("--Give option:\t");
@@ -228,24 +228,26 @@ int main(int argc, char **argv){
                 counter1(k, cnt);
                 break;
             case 6:
-                cnt = (unsigned long long int) malloc(sizeof(unsigned long long int) * N2);
+                cnt = (unsigned long long int) malloc(sizeof(unsigned long long int) * N1);
                 lfsr_counter(k, cnt);
+                break;
+            case 7:
+                cnt = (unsigned long long int) malloc(sizeof(unsigned long long int) * N1);
+                nfsr_counter(k, cnt);
                 break;
             default:
                 printf("****False option.\n");
                 break;
         }
-    } while (!(ans == 1 || ans == 2 || ans == 3 || ans == 4 || ans == 5 || ans == 6));
+    } while (!(ans == 1 || ans == 2 || ans == 3 || ans == 4 || ans == 5 || ans == 6 || ans == 7));
     
     printf("\n\n\n");
     printf("***********************ACCUMULATOR STARTED****************************\n");
     printf("----------------------------------------------------------------------\n");
         
     /*Calculate M sequence as Accumulator Cycles number.*/
-    if (ans == 5) {
+    if (ans == 5 || ans == 7 || ans == 6) {
         M = (unsigned long long int)N1 * N1;
-    } else if (ans == 6) {
-        M = (unsigned long long int)N1 * N2;
     } else {
         M = (unsigned long long int)N1 * N;
     }
@@ -266,12 +268,9 @@ int main(int argc, char **argv){
      * 
     */
     start = clock();    //start time.
-    if (ans == 5) {
+    if (ans == 5 || ans == 7 || ans == 6) {
         stop = (unsigned long long int) N1;
         up_limit = (unsigned long long int) N1;
-    } else if (ans == 6) {
-        stop = (unsigned long long int) N2;
-        up_limit = (unsigned long long int) N2;
     } else {
         stop = (unsigned long long int) N;
         up_limit = (unsigned long long int) N;

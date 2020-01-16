@@ -3,9 +3,10 @@
  *          711151051         46577
 */
 
-#ifdef COUNTER_H_
-#define COUNTER_H_
+#ifdef LFSR_H_
+#define LFSR_H_
 
 void lfsr_counter(unsigned long long int n, unsigned long long int *counter);
+unsigned long long int leftRotateOneBit(unsigned long long int n, unsigned long long int bits);
 
-#endif //COUNTER_H_
+#endif //LFSR_H_
