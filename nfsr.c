@@ -3,12 +3,21 @@
  *          711151051         46577
 */
 #include "shift.h"
+#include "stdio.h"
+#include "stdlib.h"
+#include "time.h"
 
 void nfsr_counter(const unsigned long long int n, unsigned long long int *counter) {
     unsigned long long int i, N, xor_in1, xor_in2, xor_in3, xor_in4;
     N = (unsigned long long int) pow(2, n) - 1;
     
-    unsigned long long int x = 1;
+    // Use current time as  
+    // seed for random generator 
+    srand(time(NULL));
+    
+    unsigned long long int x = (unsigned long long int) (rand() % N + 1);
+    
+    printf("### LFSR STARTS RANDOMLY FROM: %llu .\n", x);
     for (i=0; i<N; i++) {
         counter[i] = x;
         
