@@ -292,11 +292,11 @@ int main(int argc, char **argv){
            		reg = ADD(reg, cnt[cnt_idx]);
            	}
             
-            printf("Round: %llu, cnt[%llu] = ", idx, cnt_idx);
+            /*printf("Round: %llu, cnt[%llu] = ", idx, cnt_idx);
             printBinary(cnt[cnt_idx], k, stdout);
             printf(", Reg = ");
             printBinary(reg, k, stdout);
-            printf("\n");
+            printf("\n");*/
             
             if (M > idx-1) {
                 binaryToStr(reg, k, reg1);
