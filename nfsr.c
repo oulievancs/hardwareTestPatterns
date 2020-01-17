@@ -13,7 +13,7 @@ void nfsr_counter(const unsigned long long int n, unsigned long long int *counte
         counter[i] = x;
         
         xor_in1 = x & 0x1;
-        if ((n > 3 && n < 5) || (n > 5 && n < 8) || n == 15 || n == 22) {
+        if ((n > 2 && n < 5) || (n > 5 && n < 8) || n == 15 || n == 22) {
             xor_in2 = (x >> (n - 1)) & 0x1;
             
             if ((xor_in1 ^ xor_in2) & 0x1) {
