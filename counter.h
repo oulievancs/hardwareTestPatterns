@@ -6,6 +6,8 @@
 #define COUNTER_H_
 
 void counter(unsigned long long int n, unsigned long long int *counter);
+unsigned long long int counter_next_step(unsigned long long int n, unsigned long long int prev_state);
 void counter1(unsigned long long int n, unsigned long long int *counter);
+unsigned long long int counter1_next_step(unsigned long long int n, unsigned long long int prev_state)
 
 #endif // COUNTER_H_

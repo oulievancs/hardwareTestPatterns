@@ -2,6 +2,7 @@
  * Authors: Oulis Evangelos & Kalliopi Voudouri
  *          711151051         46577
 */
+#include "math.h"
 
 unsigned long long int leftRotateOneBit(unsigned long long int n, unsigned long long int BITS) {
     /* In n<<d, first d bits are 0.

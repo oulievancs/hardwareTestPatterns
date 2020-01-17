@@ -6,5 +6,6 @@
 #define GRAY_CODE_H_
 
 void gray_code(unsigned long long int n, unsigned long long int *counter);
+unsigned long long int gray_code_next_step(unsigned long long int n, unsigned long long int prev_step);
 
 #endif //GRAY_CODE_H_

@@ -7,6 +7,6 @@
 #define LFSR_H_
 
 void lfsr_counter(unsigned long long int n, unsigned long long int *counter);
-unsigned long long int leftRotateOneBit(unsigned long long int n, unsigned long long int bits);
+unsigned long long int lfsr_counter_next_state(const unsigned long long int n, const unsigned long long int prev_state);
 
 #endif //LFSR_H_

@@ -24,15 +24,16 @@
  * Define Functions.
 */
 void printLogo(void);
+unsigned long long int next_state(const int ans, const unsigned long long int cnt, const int k);
 
 /*
  * Start main program.
 */
 int main(int argc, char **argv){
-    int k, n, ans, reached = 0;
+    int k, n, ans, reached = 0, non_linear;
     int there_is, test_b=0, work_b=0;
-    unsigned long long int *cnt, cnt_idx=0, idx=0, mSeq_idx=0, arr_idx=0, tuples, reg, M, goal=0, test_cycle=1;
-    unsigned long long int start_counter = 0, stop, up_limit, N, N1, N2;
+    unsigned long long int /***/cnt, cnt_c, /*cnt_idx=0,*/ idx=0, mSeq_idx=0, arr_idx=0, tuples, reg, M, goal=0, test_cycle=1;
+    unsigned long long int start_counter, start_reg = 0, stop, up_limit, N, N1, N2;
     unsigned long long int i, j, ii;
     char *reg1, *mSeq, **arr, cir_name[30], signal[30];
     clock_t start, end;
@@ -188,6 +189,11 @@ int main(int argc, char **argv){
     /***************************************************************************************/
     /***************************************************************************************/
     
+    
+    
+    
+    
+    
     printf("--Enter K: ");
     scanf("%d", &k);
     
@@ -205,50 +211,21 @@ int main(int argc, char **argv){
     do {
         printf("--Give option:\t");
         scanf("%d", &ans);
-        
-        switch(ans) {
-            case 1:
-                cnt = (unsigned long long int) malloc(sizeof(unsigned long long int) * N);
-                counter(k, cnt);
-                break;
-            case 2:
-                cnt = (unsigned long long int) malloc(sizeof(unsigned long long int) * N);
-                gray_code(k, cnt);
-                break;
-            case 3:
-                cnt = (unsigned long long int) malloc(sizeof(unsigned long long int) * N);
-                counter(k, cnt);
-                break;
-            case 4:
-                cnt = (unsigned long long int) malloc(sizeof(unsigned long long int) * N);
-                counter(k, cnt);
-                break;
-            case 5:
-                cnt = (unsigned long long int) malloc(sizeof(unsigned long long int) * N1);
-                counter1(k, cnt);
-                break;
-            case 6:
-                cnt = (unsigned long long int) malloc(sizeof(unsigned long long int) * N2);
-                lfsr_counter(k, cnt);
-                break;
-            case 7:
-                cnt = (unsigned long long int) malloc(sizeof(unsigned long long int) * N1);
-                nfsr_counter(k, cnt);
-                break;
-            default:
-                printf("****False option.\n");
-                break;
-        }
-    } while (!(ans == 1 || ans == 2 || ans == 3 || ans == 4 || ans == 5 || ans == 6 || ans == 7));
+     } while (!(ans == 1 || ans == 2 || ans == 3 || ans == 4 || ans == 5 || ans == 6 || ans == 7));
     
     printf("\n\n\n");
     printf("***********************ACCUMULATOR STARTED****************************\n");
     printf("----------------------------------------------------------------------\n");
-        
+    
+    
+    
+    
+    
+    
     /*Calculate M sequence as Accumulator Cycles number.*/
     if (ans == 5 || ans == 7) {
         M = (unsigned long long int)N1 * N1;
-    } else if (ans == 6) {
+    } else if (ans == 6 || ans == 2) {
         M = (unsigned long long int)N1 * N2;
     } else {
         M = (unsigned long long int)N1 * N;
@@ -264,36 +241,51 @@ int main(int argc, char **argv){
         fprintf(stderr, "There was a problem on memory allocation.\n");
         exit(10);
     }
-        
+    
+    
     /*
      * Turn the accumulator to zero.
      * 
     */
     start = clock();    //start time.
     if (ans == 5 || ans == 7) {
+    	start_counter = 1;
         stop = (unsigned long long int) N1;
         up_limit = (unsigned long long int) N1;
-    } else if (ans == 6) {
+    } else if (ans == 6 || ans == 2) {
+    	start_counter = 1;
         stop = (unsigned long long int) N2;
         up_limit = (unsigned long long int) N2;
     } else {
+    	start_counter = 1;
         stop = (unsigned long long int) N;
         up_limit = (unsigned long long int) N;
     }
     
+    
+    
+    
+    
+    
+    /*Initialize Register Value.*/
+    reg = start_reg;
     do {
-        cnt_idx = start_counter;
+        //cnt_idx = start_counter;
+        cnt_c = 0;
+        cnt = start_counter;
+        non_linear = 1;
+        
         do {
             idx++;
             
             if (ans == 6) {
-            	reg = cnt[cnt_idx];
+            	reg = cnt;
            	} else {
-           		reg = ADD(reg, cnt[cnt_idx]);
+           		reg = ADD(reg, cnt);
            	}
             
-            /*printf("Round: %llu, cnt[%llu] = ", idx, cnt_idx);
-            printBinary(cnt[cnt_idx], k, stdout);
+            /*printf("Round: %llu, cnt[%llu] = ", idx, cnt_c);
+            printBinary(cnt, k, stdout);
             printf(", Reg = ");
             printBinary(reg, k, stdout);
             printf("\n");*/
@@ -303,8 +295,19 @@ int main(int argc, char **argv){
                 
                 mSeq[mSeq_idx++] = reg1[k-1];
             }
-            cnt_idx = (++cnt_idx) % up_limit;
-        } while (!(cnt_idx == stop%up_limit));
+            
+            cnt_c/*cnt_idx*/ = (++cnt_c/*cnt_idx*/) % up_limit;
+            /*Go to next state - At each counter type.*/
+            if (ans == 7 && non_linear == 1 && cnt == (pow(2, k)-1)) {
+           		cnt == pow(2, k)-1;
+           		non_linear = 0;
+           	} else if (ans == 5 && non_linear == 1 && cnt == 1) {
+           		cnt = 1;
+           		non_linear = 0;
+           	}else {
+            	cnt = next_state(ans, cnt, k);
+           	}
+        } while (!(cnt_c/*ctn_idx*/ == stop%up_limit));
         
         if (ans == 3) {
             stop = (++stop) % up_limit;
@@ -313,6 +316,10 @@ int main(int argc, char **argv){
             reg = ADD(reg, up_limit+1);
         }
     } while(/*(reg % (unsigned long long int)pow(2, k)) != 0*/idx != M);
+    
+    
+    
+    
     
     end = clock();      //stop time.
     cpu_time_used = ((double) (end - start)) / CLOCKS_PER_SEC;      //calculate time duration.
@@ -378,17 +385,65 @@ int main(int argc, char **argv){
         fprintf(stderr, "Message: You must Provide M sequence less or equal than cycles of Accumulator.\n");
     }
     
+    
+    
+    
     printf("**********************************************************************\n");
     
     if (test_b) fclose(test);
     if (work_b) fclose(workb);
     
     /*Free memory.*/
-    free(cnt);
+    /*free(cnt);*/
     free(reg1);
     free(mSeq);
     free(arr);
     return 0;
+}
+
+
+
+
+
+
+
+/* Define next state for each module counter. */
+unsigned long long int next_state(const int ans, const unsigned long long int cnt, int k) {
+	unsigned long long int result;
+	switch(ans) {
+		case 1:
+	       //cnt = (unsigned long long int) malloc(sizeof(unsigned long long int) * N);
+	       result = counter_next_state(k, cnt);
+	       break;
+	    case 2:
+	      	//cnt = (unsigned long long int) malloc(sizeof(unsigned long long int) * N);
+	     	result =  gray_code_next_state(k, cnt);
+	      	break;
+	    case 3:
+	      	//cnt = (unsigned long long int) malloc(sizeof(unsigned long long int) * N);
+	      	result = counter_next_state(k, cnt);
+	      	break;
+	    case 4:
+	      	//cnt = (unsigned long long int) malloc(sizeof(unsigned long long int) * N);
+	      	result = counter_next_state(k, cnt);
+	      	break;
+	    case 5:
+	      	//cnt = (unsigned long long int) malloc(sizeof(unsigned long long int) * N1);
+	      	result = counter1_next_state(k, cnt);
+	      	break;
+	    case 6:
+	      	//cnt = (unsigned long long int) malloc(sizeof(unsigned long long int) * N2);
+	      	result = lfsr_counter_next_state(k, cnt);
+	     	break;
+	    case 7:
+		  	//cnt = (unsigned long long int) malloc(sizeof(unsigned long long int) * N1);
+		  	result = nfsr_counter_next_state(k, cnt);
+		  	break;
+		default:
+			result = 0;
+			break;
+	}
+	return result;
 }
 
 void printLogo(void) {
