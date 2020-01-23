@@ -35,20 +35,15 @@ int main(int argc, char **argv){
     unsigned long long int /***/cnt, cnt_c, /*cnt_idx=0,*/ idx=0, mSeq_idx=0, arr_idx=0, tuples, reg, M, goal=0, test_cycle=1;
     unsigned long long int start_counter, start_reg = 0, stop, up_limit, N, N1, N2;
     unsigned long long int i, j, ii;
-    char *reg1, *mSeq, **arr, cir_name[30], signal[30];
+    char *reg1, *mSeq, **arr, cir_name[50], signal[50];
     clock_t start, end;
     double cpu_time_used, min_cycl_per = (double) 0, tmp_per;
     
     /*For output file Stream.*/
     FILE *test, *workb;
     
-    /*
-     * Initialize the zero at Register.
-     */
-    reg = 0;
-    
     printLogo();
-    
+    /***************************************************************************************/
     /************************************MENU***********************************************/
     if (argc == 7) {
         if (strcmp(argv[1], "-o") == 0) {
@@ -266,8 +261,9 @@ int main(int argc, char **argv){
     
     
     
-    
-    /*Initialize Register Value.*/
+    /*
+     * Initialize Register Value.
+     */
     reg = start_reg;
     do {
         //cnt_idx = start_counter;
