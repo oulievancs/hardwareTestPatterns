@@ -43,6 +43,16 @@ int main(int argc, char **argv){
     FILE *test, *workb;
     
     printLogo();
+	
+	/********************************USER INPUT*********************************************/
+	printf("--Enter K: ");
+    scanf("%d", &k);
+    
+    printf("--Enter n-bit coverage: ");
+    scanf("%d", &n);
+	/***************************************************************************************/
+	
+	
     /***************************************************************************************/
     /************************************MENU***********************************************/
     if (argc == 7) {
@@ -189,12 +199,6 @@ int main(int argc, char **argv){
     
     
     
-    printf("--Enter K: ");
-    scanf("%d", &k);
-    
-    printf("--Enter n-bit coverage: ");
-    scanf("%d", &n);
-    
     N = (unsigned long long int) pow(2, k) - 2;
     N1 = (unsigned long long int) pow(2, k);
     N2 = (unsigned long long int) pow(2, k) - 1;
@@ -220,7 +224,7 @@ int main(int argc, char **argv){
     /*Calculate M sequence as Accumulator Cycles number.*/
     if (ans == 5 || ans == 7) {
         M = (unsigned long long int)N1 * N1;
-    } else if (ans == 6 || ans == 2) {
+    } else if (ans == 2 || ans == 6) {
         M = (unsigned long long int)N1 * N2;
     } else {
         M = (unsigned long long int)N1 * N;
@@ -303,7 +307,7 @@ int main(int argc, char **argv){
            	}else {
             	cnt = next_state(ans, cnt, k);
            	}
-        } while (!(cnt_c/*ctn_idx*/ == stop%up_limit));
+        } while (!(cnt_c/*ctn_idx*/ == stop%up_limit || idx == M));
         
         if (ans == 3) {
             stop = (++stop) % up_limit;
