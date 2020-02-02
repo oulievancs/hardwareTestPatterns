@@ -52,6 +52,70 @@ int main(int argc, char **argv){
     scanf("%d", &n);
 	/***************************************************************************************/
 	
+	/******************************MEMORY ALLOCATION****************************************/
+	N = (unsigned long long int) pow(2, k) - 2;
+    N1 = (unsigned long long int) pow(2, k);
+    N2 = (unsigned long long int) pow(2, k) - 1;
+	
+	
+    
+    printf("=====MENU=====\n");
+    printf("Select a counter type:\n");
+    printf("[1]: Regular Counter.\n[2]: Gray Counter.\n[3]: Regular Counter with step.\n[4]: Add after N cycles (N-1).\n[5]: 1,1,....,N-1 sequence counter.\n[6]: LFSR counter.\n[7]: NFSR counter.\n\n\n");
+    
+    do {
+        printf("--Give option:\t");
+        scanf("%d", &ans);
+    } while (!(ans == 1 || ans == 2 || ans == 3 || ans == 4 || ans == 5 || ans == 6 || ans == 7));
+	
+	
+	/*Calculate M sequence as Accumulator Cycles number.*/
+    if (ans == 5 || ans == 7) {
+        M = (unsigned long long int)N1 * N1;
+    } else if (ans == 2 || ans == 6) {
+        M = (unsigned long long int)N1 * N2;
+    } else {
+        M = (unsigned long long int)N1 * N;
+    }
+	
+	if (n <= 0 || k <= 0) {
+		fprintf(stderr, "You must provide k and n as positive integers.\n");
+		exit(12);
+	}
+	
+	if (M <= n && n > 0) {
+		fprintf(stderr, "You must provide a bigger k value.\n");
+		exit(11);
+	}
+	
+	/*Calculating tuples.*/
+    tuples = (unsigned long long int) ((M - n) + 1);
+    
+    arr = (char **) malloc((unsigned long long int) sizeof(char *) * tuples);
+    reg1 = (char *) malloc((unsigned long long int) sizeof(char) * k);
+    mSeq = (char *) malloc((unsigned long long int) sizeof(char) * M);
+    
+    if (arr == NULL /*cnt == NULL ||*/) {
+        fprintf(stderr, "There was a problem on memory allocation. (1)\n");
+        //exit(10);
+    }
+	if (reg1 == NULL) {
+		fprintf(stderr, "There was a problem on memory allocation. (2)\n");
+        //exit(11);
+	}
+	if (mSeq == NULL) {
+		fprintf(stderr, "There was a problem on memory allocation. (3)\n");
+        //exit(12);
+	}
+	
+	if (arr == NULL ||/*cnt == NULL ||*/ reg1 == NULL || mSeq == NULL) {
+		exit(10);
+	}
+    
+    printf("\n\n\n");
+    printf("***********************ACCUMULATOR STARTED****************************\n");
+    printf("----------------------------------------------------------------------\n");
+	
 	
     /***************************************************************************************/
     /************************************MENU***********************************************/
@@ -197,49 +261,6 @@ int main(int argc, char **argv){
     
     
     
-    
-    
-    N = (unsigned long long int) pow(2, k) - 2;
-    N1 = (unsigned long long int) pow(2, k);
-    N2 = (unsigned long long int) pow(2, k) - 1;
-    
-    printf("=====MENU=====\n");
-    printf("Select a counter type:\n");
-    printf("[1]: Regular Counter.\n[2]: Gray Counter.\n[3]: Regular Counter with step.\n[4]: Add after N cycles (N-1).\n[5]: 1,1,....,N-1 sequence counter.\n[6]: LFSR counter.\n[7]: NFSR counter.\n\n\n");
-    
-    do {
-        printf("--Give option:\t");
-        scanf("%d", &ans);
-     } while (!(ans == 1 || ans == 2 || ans == 3 || ans == 4 || ans == 5 || ans == 6 || ans == 7));
-    
-    printf("\n\n\n");
-    printf("***********************ACCUMULATOR STARTED****************************\n");
-    printf("----------------------------------------------------------------------\n");
-    
-    
-    
-    
-    
-    
-    /*Calculate M sequence as Accumulator Cycles number.*/
-    if (ans == 5 || ans == 7) {
-        M = (unsigned long long int)N1 * N1;
-    } else if (ans == 2 || ans == 6) {
-        M = (unsigned long long int)N1 * N2;
-    } else {
-        M = (unsigned long long int)N1 * N;
-    }
-    /*Calculating tuples.*/
-    tuples = (M-n)+1;
-    
-    arr = (char **) malloc(sizeof(char *) * tuples);
-    reg1 = (char *) malloc(sizeof(char) * k);
-    mSeq = (char *) malloc(sizeof(char) * M);
-    
-    if (arr == NULL || /*cnt == NULL ||*/ reg1 == NULL || mSeq == NULL) {
-        fprintf(stderr, "There was a problem on memory allocation.\n");
-        exit(10);
-    }
     
     
     /*
