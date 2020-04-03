@@ -19,6 +19,7 @@
 #include "gray_code.h"
 #include "counter.h"
 #include "lfsr.h"
+#include "nfsr.h"
 
 /*
  * Define Functions.
@@ -30,14 +31,14 @@ unsigned long long int next_state(const int ans, const unsigned long long int cn
  * Start main program.
 */
 int main(int argc, char **argv){
-    int k, n, ans, reached = 0, non_linear;
-    int there_is, test_b=0, work_b=0;
-    unsigned long long int /***/cnt, cnt_c, /*cnt_idx=0,*/ idx=0, mSeq_idx=0, arr_idx=0, tuples, reg, M, goal=0, test_cycle=1;
+    int k, n, ans, reached, non_linear;
+    int there_is, test_b=0, work_b=0, debug_mode=0, regs=1;
+    unsigned long long int /***/cnt, cnt_c, /*cnt_idx=0,*/ idx=0, mSeq1_idx=0, *arr1_idx, tuples, reg=1, M, *goal, test_cycle=1;
     unsigned long long int start_counter, start_reg = 0, stop, up_limit, N, N1, N2;
-    unsigned long long int i, j, ii;
-    char *reg1, *mSeq, **arr, cir_name[50], signal[50];
+    unsigned long long int i, j, ii, i_reg, i_reg_c;
+    char *reg1, *mSeqs, **arrs, cir_name[50], signal[50];
     clock_t start, end;
-    double cpu_time_used, min_cycl_per = (double) 0, tmp_per;
+    double cpu_time_used, min_cycl_per, *tmp_per;
     
     /*For output file Stream.*/
     FILE *test, *workb;
@@ -52,7 +53,7 @@ int main(int argc, char **argv){
     scanf("%d", &n);
 	/***************************************************************************************/
 	
-	/******************************MEMORY ALLOCATION****************************************/
+	/******************************Prepare Operations****************************************/
 	N = (unsigned long long int) pow(2, k) - 2;
     N1 = (unsigned long long int) pow(2, k);
     N2 = (unsigned long long int) pow(2, k) - 1;
@@ -61,21 +62,26 @@ int main(int argc, char **argv){
     
     printf("=====MENU=====\n");
     printf("Select a counter type:\n");
-    printf("[1]: Regular Counter.\n[2]: Gray Counter.\n[3]: Regular Counter with step.\n[4]: Add after N cycles (N-1).\n[5]: 1,1,....,N-1 sequence counter.\n[6]: LFSR counter.\n[7]: NFSR counter.\n\n\n");
+    printf("[1]: Regular Counter.\n[2]: Gray Counter.\n[3]: Regular Counter with step.\n[4]: Add after N cycles (N-1).\n[5]: 1,1,....,N-1 sequence counter.\n[6]: LFSR counter.\n[7]: NFSR counter.\n[8]: NFSR counter and n shift registers\n\n");
     
     do {
         printf("--Give option:\t");
         scanf("%d", &ans);
-    } while (!(ans == 1 || ans == 2 || ans == 3 || ans == 4 || ans == 5 || ans == 6 || ans == 7));
+    } while (!(ans == 1 || ans == 2 || ans == 3 || ans == 4 || ans == 5 || ans == 6 || ans == 7 || ans == 8));
 	
 	
 	/*Calculate M sequence as Accumulator Cycles number.*/
-    if (ans == 5 || ans == 7) {
+    if (ans == 5 || ans == 7 || ans == 8) {
         M = (unsigned long long int)N1 * N1;
     } else if (ans == 2 || ans == 6) {
         M = (unsigned long long int)N1 * N2;
     } else {
         M = (unsigned long long int)N1 * N;
+    }
+    
+    if (ans == 8) {
+        printf("--Give the number of registered bit yout want to check:\t");
+        scanf("%d", &regs);
     }
 	
 	if (n <= 0 || k <= 0) {
@@ -90,27 +96,50 @@ int main(int argc, char **argv){
 	
 	/*Calculating tuples.*/
     tuples = (unsigned long long int) ((M - n) + 1);
-    
-    arr = (char **) malloc((unsigned long long int) sizeof(char *) * tuples);
+        
     reg1 = (char *) malloc((unsigned long long int) sizeof(char) * k);
-    mSeq = (char *) malloc((unsigned long long int) sizeof(char) * M);
+    mSeqs = (char *) malloc((unsigned long long int) sizeof(char) * regs * M);
+    arrs = (char **) malloc((unsigned long long int) sizeof(char *) * regs * tuples);
+    goal = (unsigned long long int *) malloc((int) sizeof(unsigned long long int) * regs);
+    tmp_per = (double *) malloc((int) sizeof(double) * regs);
+    arr1_idx = (unsigned long long int *) malloc((int) sizeof(unsigned long long int) * regs);
     
-    if (arr == NULL /*cnt == NULL ||*/) {
-        fprintf(stderr, "There was a problem on memory allocation. (1)\n");
-        //exit(10);
-    }
+    
+    /*
+     * Check memory allocation.
+    */
+    if (arr1_idx == NULL) {
+		fprintf(stderr, "There was a problem on memory allocation. (1)\n");
+        exit(10);
+	}
 	if (reg1 == NULL) {
 		fprintf(stderr, "There was a problem on memory allocation. (2)\n");
-        //exit(11);
+        exit(11);
 	}
-	if (mSeq == NULL) {
+	if (mSeqs == NULL) {
 		fprintf(stderr, "There was a problem on memory allocation. (3)\n");
-        //exit(12);
+        exit(12);
 	}
-	
-	if (arr == NULL ||/*cnt == NULL ||*/ reg1 == NULL || mSeq == NULL) {
-		exit(10);
+    if (arrs == NULL) {
+		fprintf(stderr, "There was a problem on memory allocation. (4)\n");
+        exit(13);
 	}
+    if (reg1 == NULL) {
+		fprintf(stderr, "There was a problem on memory allocation. (5)\n");
+        exit(14);
+	}
+    if (goal == NULL) {
+		fprintf(stderr, "There was a problem on memory allocation. (6)\n");
+        exit(15);
+	}
+    if (tmp_per == NULL) {
+		fprintf(stderr, "There was a problem on memory allocation. (7)\n");
+        exit(16);
+	}
+    if (mSeqs == NULL) {
+        fprintf(stderr, "There was a problem on memory allocation. (8)\n");
+        exit(17);
+    }
     
     printf("\n\n\n");
     printf("***********************ACCUMULATOR STARTED****************************\n");
@@ -118,7 +147,7 @@ int main(int argc, char **argv){
 	
 	
     /***************************************************************************************/
-    /************************************MENU***********************************************/
+    /********************************PROCCESS MENU******************************************/
     if (argc == 7) {
         if (strcmp(argv[1], "-o") == 0) {
             test = fopen(argv[2], "w");
@@ -245,6 +274,10 @@ int main(int argc, char **argv){
         if (strcmp(argv[1], "-z") == 0) {
             reg = (int) atoi(argv[2]);
         }
+    } else if (argc == 2) {
+        if (strcmp(argv[1], "-debug") == 0) {
+                debug_mode = 1;
+        }
     } else {
         fprintf(stderr, "./prg <-o> <fsim output> <-f> <Do script for Workbench> <-r> <start stage register>\n");
     }
@@ -262,13 +295,12 @@ int main(int argc, char **argv){
     
     
     
-    
     /*
      * Turn the accumulator to zero.
      * 
     */
     start = clock();    //start time.
-    if (ans == 5 || ans == 7) {
+    if (ans == 5 || ans == 7 || ans == 8) {
     	start_counter = 1;
         stop = (unsigned long long int) N1;
         up_limit = (unsigned long long int) N1;
@@ -305,21 +337,25 @@ int main(int argc, char **argv){
            		reg = ADD(reg, cnt);
            	}
             
-            /*printf("Round: %llu, cnt[%llu] = ", idx, cnt_c);
-            printBinary(cnt, k, stdout);
-            printf(", Reg = ");
-            printBinary(reg, k, stdout);
-            printf("\n");*/
-            
-            if (M > idx-1) {
-                binaryToStr(reg, k, reg1);
-                
-                mSeq[mSeq_idx++] = reg1[k-1];
+            if (debug_mode) {
+                printf("Round: %llu, cnt[%llu] = ", idx, cnt_c);
+                printBinary(cnt, k, stdout);
+                printf(", Reg = ");
+                printBinary(reg, k, stdout);
+                printf("\n");
             }
+            
+            binaryToStr(reg, k, reg1);
+            for (i_reg=0; i_reg<regs; i_reg++) {
+                if (M > idx-1) {
+                    mSeqs[i_reg * regs + mSeq1_idx] = reg1[k-1-i_reg];
+                }
+            }
+            mSeq1_idx++;
             
             cnt_c/*cnt_idx*/ = (++cnt_c/*cnt_idx*/) % up_limit;
             /*Go to next state - At each counter type.*/
-            if (ans == 7 && non_linear == 1 && cnt == (pow(2, k)-1)) {
+            if ((ans == 8 || ans == 7) && non_linear == 1 && cnt == (pow(2, k)-1)) {
            		cnt == pow(2, k)-1;
            		non_linear = 0;
            	} else if (ans == 5 && non_linear == 1 && cnt == 1) {
@@ -341,67 +377,107 @@ int main(int argc, char **argv){
     
     
     
-    
     end = clock();      //stop time.
     cpu_time_used = ((double) (end - start)) / CLOCKS_PER_SEC;      //calculate time duration.
     
-    //printf("**************************%d-TUPLES******************************\n", tuples);
+    if (debug_mode) printf("\n\n**************************%d-TUPLES******************************\n", tuples);
     
     if (M <= idx) {
-        for(i=0; i<tuples && reached == 0; i++) {
+        for(i_reg=0; i_reg<regs; i_reg++) {
             /*
-             * Check four multipled patterns.
-             * If current parrern is already counted, throw it away.
+             * For debug mode.
             */
-            there_is = 0;
-            for (ii=0; ii<arr_idx; ii++) {
-                if (strncmp(arr[ii], &mSeq[i], n * sizeof(char)) == 0) {
-                    there_is = 1;
-                    break;
-                }
-            }
+            if (debug_mode) printf("\n***M sequence for nr. %d Shift-Register: ", i_reg);
             
-            /*
-             * If current pattern isn't counted or is the 1st pattern
-             *   then we keep it at "arr" array.
-            */
-            if (there_is == 0 || arr_idx == 0) {
-                arr[arr_idx++] = &mSeq[i];
+            arr1_idx[i_reg] = 0;
+            reached = 0;
+            min_cycl_per = (double) 0;
+            goal[i_reg] = 0;
+            tmp_per[i_reg] = 0;
+            
+            for(i=0; i<tuples && reached == 0; i++) {
+                /*
+                 * Check four multipled patterns.
+                 * If current parr1ern is already counted, throw it away.
+                */
+                there_is = 0;
+                for (ii=0; ii<arr1_idx[i_reg] && there_is == 0; ii++) {
+                    if (strncmp(arrs[i_reg * regs + ii], &mSeqs[i_reg * regs + i], n * sizeof(char)) == 0) {
+                        there_is = 1;
+                    }
+                }
                 
-                if (test_b) fprintf(test, "\n%llu:", test_cycle++);
-                if (work_b) fprintf(workb, "force -freeze %s ", signal);
-                for(j=0; j<n; j++) {
-                    if (test_b) fprintf(test, "%c", mSeq[i+j]);
-                    if (work_b) fprintf(workb, "%c", mSeq[i+j]);
+                /*
+                 * For debug mode.
+                */
+                if (debug_mode) printf("%c", mSeqs[i_reg * regs + i]);
+                
+                /*
+                 * If current pattern isn't counted or is the 1st pattern
+                 *   then we keep it at "arrs[i_reg]" arr1ay.
+                */
+                if (there_is == 0 || arr1_idx[i_reg] == 0) {
+                    arrs[i_reg * regs + arr1_idx[i_reg]] = &mSeqs[i_reg * regs + i];
+                    arr1_idx[i_reg]++;
+                    
+                    if (test_b) fprintf(test, "\n%llu:", test_cycle++);
+                    if (work_b) fprintf(workb, "force -freeze %s ", signal);
+                    for(j=0; j<n; j++) {
+                        if (test_b) fprintf(test, "%c", mSeqs[i_reg * regs + (i+j)]);
+                        if (work_b) fprintf(workb, "%c", mSeqs[i_reg * regs + (i+j)]);
+                    }
+                    if (work_b) fprintf(workb, " 0\nrun\n");
+                    
+                    tmp_per[i_reg] = (double) arr1_idx[i_reg]/(pow(2, n))* (double) 100;
+                    
+                    if (tmp_per[i_reg] == (double) 100) {
+                        reached = 1;
+                    }
                 }
-                if (work_b) fprintf(workb, " 0\nrun\n");
+                
+                if (tmp_per[i_reg] > min_cycl_per) {
+                    goal[i_reg]++;
+                    min_cycl_per = tmp_per[i_reg];
+                }
+                else if (tmp_per[i_reg] == min_cycl_per && tmp_per[i_reg] != (double) 100) {
+                    goal[i_reg]++;
+                }
             }
             
-            tmp_per = (double) arr_idx/(pow(2, n))* (double) 100;
-            if (tmp_per > min_cycl_per) {
-                goal++;
-                min_cycl_per = tmp_per;
-            } else if (tmp_per == min_cycl_per && tmp_per != 100) {
-                goal++;
-            }
-            
-            if (tmp_per == 100) {
-                reached = 1;
+            printf("\n***\tNumber of sequence patterns:%llu\n", arr1_idx[i_reg]);
+            printf("***\t%d-coverage                   :%f%%\n", n, tmp_per[i_reg]);
+            if (((double) arr1_idx[i_reg]/(pow(2, n))*100) >= (double) 100) {
+                printf("***\t100%% Reached at              :%llu cycles\n", --goal[i_reg]);
+            } else {
+                printf("***\t%.3f%% Reached at            :%llu cycles\n", tmp_per[i_reg], --goal[i_reg]);
             }
         }
         
-        printf("****************************STATISTICS********************************\n");
+        printf("\n\n****************************STATISTICS********************************\n");
         printf("***\tNumber of cycles           :%llu\n", idx);
-        printf("***\tNumber of sequence patterns:%llu\n", arr_idx);
-        if (((double) arr_idx/(pow(2, n))*100) >= (double) 100) {
-            printf("***\t100%% Reached at              :%llu cycles\n", --goal);
-        } else {
-            printf("***\t%.3f%% Reached at            :%llu cycles\n", tmp_per, --goal);
-        }
-        printf("***\t%d-coverage                   :%f%%\n", n, tmp_per);
+        
+        
         
         printf("***\tM sequence (%llu-bits)       :{}\n", M);
         printf("***\tTime duration msec(s)        :%f\n", cpu_time_used*(double) 1000);
+        printf("**********************************************************************\n");
+        
+        printf("*****************************SIMILARITY*******************************\n");
+        for(i_reg=0; i_reg<regs; i_reg++) {
+            for(i_reg_c=0; i_reg_c<regs; i_reg_c++) {
+                
+                if (i_reg < i_reg_c) {
+                    there_is = 0;
+                    
+                    for (ii=0; ii<arr1_idx[i_reg] && ii<arr1_idx[i_reg_c]; ii++) {
+                        if (strncmp(arrs[i_reg * regs + ii], arrs[i_reg_c * regs + ii], n * sizeof(char)) == 0) {
+                            there_is++;
+                        }
+                    }
+                    printf("***\tRegister%d[%llu] and Register%d[%llu] has similar %d patterns.\n\n", i_reg, goal[i_reg], i_reg_c, goal[i_reg_c], there_is);
+                }
+            }
+        }
     } else {
         fprintf(stderr, "Message: You must Provide M sequence less or equal than cycles of Accumulator.\n");
     }
@@ -416,9 +492,12 @@ int main(int argc, char **argv){
     
     /*Free memory.*/
     /*free(cnt);*/
+    free(goal);
+    free(tmp_per);
+    free(arr1_idx);
     free(reg1);
-    free(mSeq);
-    free(arr);
+    free(mSeqs);
+    free(arrs);
     return 0;
 }
 
@@ -458,6 +537,10 @@ unsigned long long int next_state(const int ans, const unsigned long long int cn
 	     	break;
 	    case 7:
 		  	//cnt = (unsigned long long int) malloc(sizeof(unsigned long long int) * N1);
+		  	result = nfsr_counter_next_state(k, cnt);
+		  	break;
+        case 8:
+            //cnt = (unsigned long long int) malloc(sizeof(unsigned long long int) * N1);
 		  	result = nfsr_counter_next_state(k, cnt);
 		  	break;
 		default:

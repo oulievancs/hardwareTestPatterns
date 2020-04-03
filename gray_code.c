@@ -2,6 +2,7 @@
  * Authors: Oulis Evangelos & Kalliopi Voudouri
  *          711151051         46577
 */
+#include "gray_code.h"
 
 void gray_code(unsigned long long int n, unsigned long long int *counter) {
     unsigned long long int N = 1 << n, x, i, j=0;

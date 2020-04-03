@@ -7,6 +7,7 @@
 #include "stdlib.h"
 #include "time.h"
 #include "math.h"
+#include "nfsr.h"
 
 void nfsr_counter(const const unsigned long long int n, unsigned long long int *counter) {
     unsigned long long int i, N, xor_in1, xor_in2, xor_in3, xor_in4;

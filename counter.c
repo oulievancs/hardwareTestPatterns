@@ -3,6 +3,7 @@
  *          711151051         46577
 */
 #include "math.h"
+#include "counter.h"
 
 void counter(unsigned long long int n, unsigned long long int *counter) {
     unsigned long long int i, N;
