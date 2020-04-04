@@ -35,7 +35,7 @@ int main(int argc, char **argv){
     int there_is, test_b=0, work_b=0, debug_mode=0, regs=1;
     unsigned long long int /***/cnt, cnt_c, /*cnt_idx=0,*/ idx=0, mSeq1_idx=0, *arr1_idx, tuples, reg=1, M, *goal, test_cycle=1;
     unsigned long long int start_counter, start_reg = 0, stop, up_limit, N, N1, N2;
-    unsigned long long int i, j, ii, i_reg, i_reg_c;
+    unsigned long long int i, j, ii, iii, i_reg, i_reg_c;
     char *reg1, *mSeqs, **arrs, cir_name[50], signal[50];
     clock_t start, end;
     double cpu_time_used, min_cycl_per, *tmp_per;
@@ -62,26 +62,28 @@ int main(int argc, char **argv){
     
     printf("=====MENU=====\n");
     printf("Select a counter type:\n");
-    printf("[1]: Regular Counter.\n[2]: Gray Counter.\n[3]: Regular Counter with step.\n[4]: Add after N cycles (N-1).\n[5]: 1,1,....,N-1 sequence counter.\n[6]: LFSR counter.\n[7]: NFSR counter.\n[8]: NFSR counter and n shift registers\n\n");
+    printf("[1]: Regular Counter.\n[2]: Gray Counter.\n[3]: Regular Counter with step.\n[4]: Add after N cycles (N-1).\n[5]: 1,1,....,N-1 sequence counter.\n[6]: LFSR counter.\n[7]: NFSR counter.\n[8]: NFSR non-linear.\n[9]: NFSR counter and n shift registers.\n\n");
     
     do {
         printf("--Give option:\t");
         scanf("%d", &ans);
-    } while (!(ans == 1 || ans == 2 || ans == 3 || ans == 4 || ans == 5 || ans == 6 || ans == 7 || ans == 8));
+    } while (!(ans == 1 || ans == 2 || ans == 3 || ans == 4 || ans == 5 || ans == 6 || ans == 7 || ans == 8 || ans == 9));
 	
 	
 	/*Calculate M sequence as Accumulator Cycles number.*/
-    if (ans == 5 || ans == 7 || ans == 8) {
+    if (ans == 5 || ans == 7 || ans == 9) {
         M = (unsigned long long int)N1 * N1;
-    } else if (ans == 2 || ans == 6) {
+    } else if (ans == 2 || ans == 6 || ans == 8) {
         M = (unsigned long long int)N1 * N2;
     } else {
         M = (unsigned long long int)N1 * N;
     }
     
-    if (ans == 8) {
-        printf("--Give the number of registered bit yout want to check:\t");
-        scanf("%d", &regs);
+    if (ans == 9) {
+        do {
+            printf("--Give the number of registered bit yout want to check:\t");
+            scanf("%d", &regs);
+        } while (! (regs <= k));
     }
 	
 	if (n <= 0 || k <= 0) {
@@ -300,11 +302,11 @@ int main(int argc, char **argv){
      * 
     */
     start = clock();    //start time.
-    if (ans == 5 || ans == 7 || ans == 8) {
+    if (ans == 5 || ans == 7 || ans == 9) {
     	start_counter = 1;
         stop = (unsigned long long int) N1;
         up_limit = (unsigned long long int) N1;
-    } else if (ans == 6 || ans == 2) {
+    } else if (ans == 6 || ans == 2 || ans == 8) {
     	start_counter = 1;
         stop = (unsigned long long int) N2;
         up_limit = (unsigned long long int) N2;
@@ -355,7 +357,7 @@ int main(int argc, char **argv){
             
             cnt_c/*cnt_idx*/ = (++cnt_c/*cnt_idx*/) % up_limit;
             /*Go to next state - At each counter type.*/
-            if ((ans == 8 || ans == 7) && non_linear == 1 && cnt == (pow(2, k)-1)) {
+            if ((ans == 9 || ans == 7) && non_linear == 1 && cnt == (pow(2, k)-1)) {
            		cnt == pow(2, k)-1;
            		non_linear = 0;
            	} else if (ans == 5 && non_linear == 1 && cnt == 1) {
@@ -407,6 +409,15 @@ int main(int argc, char **argv){
                     }
                 }
                 
+                
+                for (i_reg_c=0; i_reg_c<regs && i_reg_c < i_reg && there_is == 0; i_reg_c++) {
+                    for (ii=0; ii<arr1_idx[i_reg_c] && there_is == 0; ii++) {
+                        if (strncmp(arrs[i_reg_c * regs + ii], &mSeqs[i_reg * regs + i], n * sizeof(char)) == 0) {
+                            there_is = 1;
+                        }
+                    }
+                }
+                
                 /*
                  * For debug mode.
                 */
@@ -416,7 +427,7 @@ int main(int argc, char **argv){
                  * If current pattern isn't counted or is the 1st pattern
                  *   then we keep it at "arrs[i_reg]" arr1ay.
                 */
-                if (there_is == 0 || arr1_idx[i_reg] == 0) {
+                if ((i_reg == 0 && (there_is == 0 || arr1_idx[i_reg] == 0)) || (i_reg != 0 && there_is == 0)) {
                     arrs[i_reg * regs + arr1_idx[i_reg]] = &mSeqs[i_reg * regs + i];
                     arr1_idx[i_reg]++;
                     
@@ -426,6 +437,7 @@ int main(int argc, char **argv){
                         if (test_b) fprintf(test, "%c", mSeqs[i_reg * regs + (i+j)]);
                         if (work_b) fprintf(workb, "%c", mSeqs[i_reg * regs + (i+j)]);
                     }
+                    
                     if (work_b) fprintf(workb, " 0\nrun\n");
                     
                     tmp_per[i_reg] = (double) arr1_idx[i_reg]/(pow(2, n))* (double) 100;
@@ -444,7 +456,7 @@ int main(int argc, char **argv){
                 }
             }
             
-            printf("\n***\tNumber of sequence patterns:%llu\n", arr1_idx[i_reg]);
+            printf("\n***\tNumber of sequence patterns\t:%llu\n", arr1_idx[i_reg]);
             printf("***\t%d-coverage                   :%f%%\n", n, tmp_per[i_reg]);
             if (((double) arr1_idx[i_reg]/(pow(2, n))*100) >= (double) 100) {
                 printf("***\t100%% Reached at              :%llu cycles\n", --goal[i_reg]);
@@ -469,9 +481,11 @@ int main(int argc, char **argv){
                 if (i_reg < i_reg_c) {
                     there_is = 0;
                     
-                    for (ii=0; ii<arr1_idx[i_reg] && ii<arr1_idx[i_reg_c]; ii++) {
-                        if (strncmp(arrs[i_reg * regs + ii], arrs[i_reg_c * regs + ii], n * sizeof(char)) == 0) {
-                            there_is++;
+                    for (ii=0; ii<N1; ii++) {
+                        for (iii=0; iii<N1; iii++) {
+                            if (strncmp(&mSeqs[i_reg * regs + ii], &mSeqs[i_reg_c * regs + iii], n * sizeof(char)) != 0) {
+                                there_is++;
+                            }
                         }
                     }
                     printf("***\tRegister%d[%llu] and Register%d[%llu] has similar %d patterns.\n\n", i_reg, goal[i_reg], i_reg_c, goal[i_reg_c], there_is);
@@ -540,6 +554,10 @@ unsigned long long int next_state(const int ans, const unsigned long long int cn
 		  	result = nfsr_counter_next_state(k, cnt);
 		  	break;
         case 8:
+            //cnt = (unsigned long long int) malloc(sizeof(unsigned long long int) * N1);
+		  	result = nfsr_counter_next_state(k, cnt);
+		  	break;
+        case 9:
             //cnt = (unsigned long long int) malloc(sizeof(unsigned long long int) * N1);
 		  	result = nfsr_counter_next_state(k, cnt);
 		  	break;
