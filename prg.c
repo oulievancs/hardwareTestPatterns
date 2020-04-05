@@ -87,8 +87,8 @@ int main(int argc, char **argv){
             printf("--Give the number of registered bit yout want to check:\t");
             scanf("%d", &regs);
         } while (! (regs <= k));
-        halt = ((int) (n/2));
-        halt_d = ((int) (n % 2));
+        halt = ((int) (n/regs));
+        halt_d = ((int) (n % regs));
         
         mSeqs1 =    (char *) malloc((unsigned long long int) sizeof(char) * tuples * n);
         reg2 =      (char *) malloc((unsigned long long int) sizeof(char) * n);
@@ -493,7 +493,7 @@ int main(int argc, char **argv){
                      * Check four multipled patterns.
                      * If current parr1ern is already counted, throw it away.
                     */
-                    if (i_reg == regs-1) {
+                    if (i_reg == 0) {
                         for(j=0; j<(halt+halt_d); j++) {
                             reg2[reg_idx++] = mSeqs[i_reg * M + (i+j)];
                         }
@@ -516,7 +516,7 @@ int main(int argc, char **argv){
                     if (work_b) fprintf(workb, "force -freeze %s ", signal);
                     
                     for(i_reg=0; i_reg<regs; i_reg++) {
-                        if (i_reg == regs-1) {
+                        if (i_reg == 0) {
                             for(j=0; j<(halt+halt_d); j++) {
                                 if (test_b) fprintf(test, "%c", mSeqs[i_reg * M + (i+j)]);
                                 if (work_b) fprintf(workb, "%c", mSeqs[i_reg * M + (i+j)]);
@@ -536,17 +536,21 @@ int main(int argc, char **argv){
                         
                         tmp_per[i_reg] = (double) arr1_idx[i_reg]/(pow(2, n))* (double) 100;
                         
-                        if (tmp_per[i_reg] == (double) 100) {
-                            reached = 1;
-                        }
                         
-                        if (tmp_per[i_reg] > min_cycl_per) {
-                            goal[i_reg]++;
-                            min_cycl_per = tmp_per[i_reg];
-                        }
-                        else if (tmp_per[i_reg] == min_cycl_per && tmp_per[i_reg] != (double) 100) {
-                            goal[i_reg]++;
-                        }
+                    }
+                }
+                
+                for(i_reg=0; i_reg<regs; i_reg++) {
+                    if (tmp_per[i_reg] == (double) 100) {
+                        reached = 1;
+                    }
+                        
+                    if (tmp_per[i_reg] > min_cycl_per) {
+                        goal[i_reg]++;
+                        min_cycl_per = tmp_per[i_reg];
+                    }
+                    else if (tmp_per[i_reg] == min_cycl_per && tmp_per[i_reg] != (double) 100) {
+                        goal[i_reg]++;
                     }
                 }
                 if (work_b) fprintf(workb, " 0\nrun\n");
