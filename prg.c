@@ -72,15 +72,15 @@ int main(int argc, char **argv){
 	
 	/*Calculate M sequence as Accumulator Cycles number.*/
     if (ans == 5 || ans == 7 || ans == 9 || ans == 10) {
-        M = (unsigned long long int)N1 * N1;
+        M = (unsigned long long int)N1 * N1 + n;
     } else if (ans == 2 || ans == 6 || ans == 8) {
-        M = (unsigned long long int)N1 * N2;
+        M = (unsigned long long int)N1 * N2 + n;
     } else {
-        M = (unsigned long long int)N1 * N;
+        M = (unsigned long long int)N1 * N + n;
     }
     
     /*Calculating tuples.*/
-    tuples = (unsigned long long int) ((M - n) + 1);
+    tuples = (unsigned long long int) (M + 1);
     
     if (ans == 9) {
         do {
@@ -331,6 +331,20 @@ int main(int argc, char **argv){
      * Initialize Register Value.
      */
     reg = start_reg;
+	
+	for (i=0; i<n; i++) {
+		for (i_reg=0; i_reg<regs; i_reg++) {
+			if (M > idx-1) {
+				if (ans != 10) {
+					mSeqs[i_reg * M + mSeq1_idx] = start_reg;
+				} else {
+					mSeqs[i_reg * M + mSeq1_idx] = start_reg;
+				}
+			}
+		}
+		mSeq1_idx++;
+	}
+			
     do {
         //cnt_idx = start_counter;
         cnt_c = 0;
