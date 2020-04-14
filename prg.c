@@ -33,7 +33,7 @@ unsigned long long int next_state(const int ans, const unsigned long long int cn
 int main(int argc, char **argv){
     int k, n, ans, reached, non_linear;
     int there_is, test_b=0, work_b=0, debug_mode=0, regs=1, halt, halt_d;
-    unsigned long long int /***/cnt, cnt_c, /*cnt_idx=0,*/ idx=0, *mSeq1_idx, *arr1_idx=NULL, tuples, reg=1, M, *goal=NULL, test_cycle=1, reg_idx;
+    unsigned long long int /***/cnt, cnt_c, /*cnt_idx=0,*/ idx=0, *mSeq1_idx=NULL, *arr1_idx=NULL, tuples, reg=1, M, *goal=NULL, test_cycle=1, reg_idx;
     unsigned long long int start_counter, start_reg = 0, stop, up_limit, N, N1, N2;
     unsigned long long int i, j, ii, iii, i_reg, i_reg_c, mSeqs1_idx=0;
     char *reg1=NULL, *reg2=NULL, *mSeqs=NULL, **arrs=NULL, cir_name[50], signal[50], *mSeqs1=NULL;
@@ -652,6 +652,7 @@ int main(int argc, char **argv){
     if (reg1 != NULL) free(reg1);
     if (mSeqs != NULL) free(mSeqs);
     if (arrs != NULL) free(arrs);
+	if (mSeq1_idx != NULL) free(mSeq1_idx);
     
     return 0;
 }
