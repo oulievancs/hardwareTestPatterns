@@ -33,7 +33,7 @@ unsigned long long int next_state(const int ans, const unsigned long long int cn
 int main(int argc, char **argv){
     int k, n, ans, reached, non_linear;
     int there_is, test_b=0, work_b=0, debug_mode=0, regs=1, halt, halt_d;
-    unsigned long long int /***/cnt, cnt_c, /*cnt_idx=0,*/ idx=0, mSeq1_idx=0, *arr1_idx=NULL, tuples, reg=1, M, *goal=NULL, test_cycle=1, reg_idx;
+    unsigned long long int /***/cnt, cnt_c, /*cnt_idx=0,*/ idx=0, *mSeq1_idx, *arr1_idx=NULL, tuples, reg=1, M, *goal=NULL, test_cycle=1, reg_idx;
     unsigned long long int start_counter, start_reg = 0, stop, up_limit, N, N1, N2;
     unsigned long long int i, j, ii, iii, i_reg, i_reg_c, mSeqs1_idx=0;
     char *reg1=NULL, *reg2=NULL, *mSeqs=NULL, **arrs=NULL, cir_name[50], signal[50], *mSeqs1=NULL;
@@ -73,14 +73,16 @@ int main(int argc, char **argv){
 	/*Calculate M sequence as Accumulator Cycles number.*/
     if (ans == 5 || ans == 7 || ans == 9 || ans == 10) {
         M = (unsigned long long int)N1 * N1 + n;
-    } else if (ans == 2 || ans == 6 || ans == 8) {
+    } else if (ans == 2 || ans == 8) {
         M = (unsigned long long int)N1 * N2 + n;
-    } else {
+    } else if (ans == 6) {
+		M = (unsigned long long int)N2 + n;
+	} else {
         M = (unsigned long long int)N1 * N + n;
     }
     
     /*Calculating tuples.*/
-    tuples = (unsigned long long int) (M + 1);
+    tuples = (unsigned long long int) (M - n);
     
     if (ans == 9) {
         do {
@@ -124,6 +126,7 @@ int main(int argc, char **argv){
     goal =      (unsigned long long int *) malloc((int) sizeof(unsigned long long int) * regs);
     tmp_per =   (double *) malloc((int) sizeof(double) * regs);
     arr1_idx =  (unsigned long long int *) malloc((int) sizeof(unsigned long long int) * regs);
+	mSeq1_idx = (unsigned long long int *) malloc((int) sizeof(unsigned long long int) * regs);
     
     
     /*
@@ -324,7 +327,9 @@ int main(int argc, char **argv){
     }
     
     
-    
+    for (i_reg=0; i_reg<regs; i_reg++) {
+		mSeq1_idx[i_reg] = 0;
+	}
     
     
     /*
@@ -332,19 +337,31 @@ int main(int argc, char **argv){
      */
     reg = start_reg;
 	
-	for (i=0; i<n; i++) {
+	binaryToStr(start_reg, k, reg1);
+	if (ans != 9) {
 		for (i_reg=0; i_reg<regs; i_reg++) {
-			if (M > idx-1) {
-				if (ans != 10) {
-					mSeqs[i_reg * M + mSeq1_idx] = start_reg;
-				} else {
-					mSeqs[i_reg * M + mSeq1_idx] = start_reg;
+			for (i=0; i<n; i++) {
+				mSeqs[i_reg * M + mSeq1_idx[i_reg]] = reg1[0];
+				mSeq1_idx[i_reg]++;
+			}
+		}
+	} else {
+		for (i_reg=0; i_reg<regs; i_reg++) {
+			if (i_reg == 0) {
+				for (i=0; i<halt+halt_d; i++) {
+					mSeqs[i_reg * M + mSeq1_idx[i_reg]] = reg1[0];
+					mSeq1_idx[i_reg]++;
+				}
+			} else {
+				for (i=0; i<halt; i++) {
+					mSeqs[i_reg * M + mSeq1_idx[i_reg]] = reg1[0];
+					mSeq1_idx[i_reg]++;
 				}
 			}
 		}
-		mSeq1_idx++;
 	}
-			
+	
+	idx += n;
     do {
         //cnt_idx = start_counter;
         cnt_c = 0;
@@ -372,13 +389,14 @@ int main(int argc, char **argv){
             for (i_reg=0; i_reg<regs; i_reg++) {
                 if (M > idx-1) {
                     if (ans != 10) {
-                        mSeqs[i_reg * M + mSeq1_idx] = reg1[k-1-i_reg];
+                        mSeqs[i_reg * M + mSeq1_idx[i_reg]] = reg1[k-1-i_reg];
                     } else {
-                        mSeqs[i_reg * M + mSeq1_idx] = reg1[k-1-i_reg-((~((reg>>(1)&0x1) ^ reg&0x1)) & 0x1)];
+                        mSeqs[i_reg * M + mSeq1_idx[i_reg]] = reg1[k-1-i_reg-((~((reg>>(1)&0x1) ^ reg&0x1)) & 0x1)];
                     }
                 }
+				mSeq1_idx[i_reg]++;
             }
-            mSeq1_idx++;
+            
             
             cnt_c/*cnt_idx*/ = (++cnt_c/*cnt_idx*/) % up_limit;
             /*Go to next state - At each counter type.*/
@@ -486,7 +504,7 @@ int main(int argc, char **argv){
                 }
                 
                 printf("\n***\tNumber of sequence patterns              :%llu\n", arr1_idx[i_reg]);
-                printf("***\tn-coverage                               :%f%%\n", n, tmp_per[i_reg]);
+                printf("***\tn-coverage                               :%f%%\n", tmp_per[i_reg]);
                 if (((double) arr1_idx[i_reg]/(pow(2, n))*100) >= (double) 100) {
                     printf("***\t%.3f%% Reached at                        :%llu cycles\n", 100, goal[i_reg]);
                 } else {
@@ -576,7 +594,7 @@ int main(int argc, char **argv){
             }
             
             printf("\n***\tNumber of sequence patterns              :%llu\n", arr1_idx[0]);
-            printf("***\tn-coverage                               :(%d) %f%%\n", n, min_cycl_per);
+            printf("***\tn-coverage                               :(%d) %f%%\n", min_cycl_per);
             if (((double) arr1_idx[0]/(pow(2, n))*100) >= (double) 100) {
                 printf("***\t100%% Reached at                         :%llu cycles\n", goal[0]);
             } else {
