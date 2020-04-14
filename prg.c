@@ -716,11 +716,19 @@ unsigned long long int next_state(const int ans, const unsigned long long int cn
 
 void printLogo(void) {
     
-    printf("\n\n\n");
+    /*printf("\n\n\n");
     printf("    **     **    **    **  **   **    **  **  **  **         **    ******    *****   ****\n");
     printf("   *  *   **    **     **  **   ** ** **  **  **  **        *  *     **     **   **  ** **\n");
     printf("  ****** **    **      **  **   **    **  **  **  **       ******    **     **   **  **** \n");
     printf(" *      * **    **     **  **   **    **  **  **  **      *      *   **     **   **  **  ** \n");
     printf("*        * **    **    ******   **    **  ******  ****** *        *  **      ****    **   ** \n");
-    printf("==============================================================================================\n");
+    printf("==============================================================================================\n");*/
+	printf("        ************************************************\n");
+	printf("        *                                              *\n");
+	printf("        *     Welcome to ACCUMULATOR(version 2.1)      *\n");
+	printf("        *                                              *\n");
+	printf("        *  Student Evangelos Oulis (cs151051@uniwa.gr) *\n");
+	printf("        *           Web: http://ice.uniwa.gr           *\n");
+	printf("        *   University of West Attica, Athens, Greece  *\n");
+	printf("        ************************************************\n");
 }
