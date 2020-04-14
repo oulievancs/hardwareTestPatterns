@@ -82,7 +82,7 @@ int main(int argc, char **argv){
     }
     
     /*Calculating tuples.*/
-    tuples = (unsigned long long int) (M - n);
+    tuples = (unsigned long long int) (M - n + 1);
     
     if (ans == 9) {
         do {
@@ -448,7 +448,7 @@ int main(int argc, char **argv){
                      * If current parr1ern is already counted, throw it away.
                     */
                     there_is = 0;
-                    /*for (ii=0; ii<arr1_idx[i_reg] && there_is == 0; ii++) {
+                    for (ii=0; ii<arr1_idx[i_reg] && there_is == 0; ii++) {
                         if (strncmp(arrs[i_reg * M + ii], &mSeqs[i_reg * M + i], n * sizeof(char)) == 0) {
                             there_is = 1;
                         }
@@ -461,7 +461,7 @@ int main(int argc, char **argv){
                                 there_is = 1;
                             }
                         }
-                    }*/
+                    }
                     
                     /*
                      * For debug mode.
@@ -473,12 +473,12 @@ int main(int argc, char **argv){
                      *   then we keep it at "arrs[i_reg]" array.
                     */
                     
-                    /*if (there_is == 0 || arr1_idx[i_reg] == 0) {
+                    if (there_is == 0 || arr1_idx[i_reg] == 0) {
                         arrs[i_reg * M + arr1_idx[i_reg]] = &mSeqs[i_reg * M + i];
                         arr1_idx[i_reg]++;
                         
                         tmp_per[i_reg] = (double) arr1_idx[i_reg]/(pow(2, n))* (double) 100;
-                    }*/
+                    }
                     
                     if (test_b) fprintf(test, "\n%llu:", test_cycle++);
                     if (work_b) fprintf(workb, "force -freeze %s ", signal);
@@ -506,7 +506,7 @@ int main(int argc, char **argv){
                 printf("\n***\tNumber of sequence patterns              :%llu\n", arr1_idx[i_reg]);
                 printf("***\tn-coverage                               :%f%%\n", tmp_per[i_reg]);
                 if (((double) arr1_idx[i_reg]/(pow(2, n))*100) >= (double) 100) {
-                    printf("***\t%.3f%% Reached at                        :%llu cycles\n", 100, goal[i_reg]);
+                    printf("***\t100%% Reached at                        :%llu cycles\n", goal[i_reg]);
                 } else {
                     printf("***\tBiggest Reached at                       :%llu cycles\n", goal[i_reg]);
                 }
@@ -602,7 +602,7 @@ int main(int argc, char **argv){
             }
         }
         
-        printf("***\tNumber of cycles                         :%llu\n", idx);
+        printf("***\tNumber of cycles                         :%llu\n", idx-n);
         
         
         
