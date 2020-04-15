@@ -1,7 +1,7 @@
 /*
  * Authors: Oulis Evangelos & Kalliopi Voudouri
  *          711151051         46577
- * NFSR counter applied using Internal Feedback.
+ * NFSR counter applied using Internal & External Feedback.
 */
 
 #ifdef LFSR_H_
