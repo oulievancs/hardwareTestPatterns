@@ -32,7 +32,7 @@ unsigned long long int next_state(const int ans, const unsigned long long int cn
 */
 int main(int argc, char **argv){
     int k, n, ans, reached, non_linear;
-    int there_is, test_b=0, work_b=0, debug_mode=0, regs=1, halt, halt_d;
+    int there_is, test_b=0, work_b=0, debug_mode=0, no_compare=0, regs=1, halt, halt_d;
     unsigned long long int /***/cnt, cnt_c, /*cnt_idx=0,*/ idx=0, *mSeq1_idx=NULL, *arr1_idx=NULL, tuples, reg=1, M, *goal=NULL, test_cycle=1, reg_idx;
     unsigned long long int start_counter, start_reg = 0, stop, up_limit, N, N1, N2;
     unsigned long long int i, j, ii, iii, i_reg, i_reg_c, mSeqs1_idx=0;
@@ -62,27 +62,27 @@ int main(int argc, char **argv){
     
     printf("=====MENU=====\n");
     printf("Select a counter type:\n");
-    printf("[1]: Regular Counter.\n[2]: Gray Counter.\n[3]: Regular Counter with step.\n[4]: Add after N cycles (N-1).\n[5]: 1,1,....,N-1 sequence counter.\n[6]: LFSR counter.\n[7]: NFSR counter.\n[8]: NFSR non-linear.\n[9]: NFSR counter and n shift registers.\n[10]: NFSR non-linear extra xor.\n\n");
+    printf("[1]: Regular Counter.\n[2]: Gray Counter.\n[3]: Regular Counter with step.\n[4]: Add after N cycles (N-1).\n[5]: 1,1,....,N-1 sequence counter.\n[6]: LFSR - internal counter.\n[7]: NFSR - internal counter.\n[8]: NFSR non-linear.\n[9]: NFSR counter and n shift registers.\n[10]: NFSR non-linear extra xor.\n[11]: LFSR - external counter.[12]: NFSR - external counter.\n\n");
     
     do {
         printf("--Give option:\t");
         scanf("%d", &ans);
-    } while (!(ans == 1 || ans == 2 || ans == 3 || ans == 4 || ans == 5 || ans == 6 || ans == 7 || ans == 8 || ans == 9 || ans == 10));
+    } while (!(ans == 1 || ans == 2 || ans == 3 || ans == 4 || ans == 5 || ans == 6 || ans == 7 || ans == 8 || ans == 9 || ans == 10 || ans == 11 || ans == 12));
 	
 	
 	/*Calculate M sequence as Accumulator Cycles number.*/
-    if (ans == 5 || ans == 7 || ans == 9 || ans == 10) {
+    if (ans == 5 || ans == 7 || ans == 9 || ans == 10 || ans == 12) {
         M = (unsigned long long int)N1 * N1 + n;
     } else if (ans == 2 || ans == 8) {
-        M = (unsigned long long int)N1 * N2 + n;
-    } else if (ans == 6) {
-		M = (unsigned long long int)N2 + n;
+        M = (unsigned long long int)(N1 * N2 + n);
+    } else if (ans == 6 || ans == 11) {
+		M = (unsigned long long int)(N2 + 2*n);
 	} else {
-        M = (unsigned long long int)N1 * N + n;
+        M = (unsigned long long int)(N1 * N + n);
     }
     
     /*Calculating tuples.*/
-    tuples = (unsigned long long int) (M - n + 1);
+    tuples = (unsigned long long int) ((M - n) + 1);
     
     if (ans == 9) {
         do {
@@ -122,7 +122,7 @@ int main(int argc, char **argv){
 	}
 	
 	reg1 =      (char *) malloc((unsigned long long int) sizeof(char) * k);
-    mSeqs =     (char *) malloc((unsigned long long int) sizeof(char) * regs * M);
+    mSeqs =     (char *) calloc(regs * M, (unsigned long long int) sizeof(char));
     goal =      (unsigned long long int *) malloc((int) sizeof(unsigned long long int) * regs);
     tmp_per =   (double *) malloc((int) sizeof(double) * regs);
     arr1_idx =  (unsigned long long int *) malloc((int) sizeof(unsigned long long int) * regs);
@@ -160,136 +160,37 @@ int main(int argc, char **argv){
 	
     /***************************************************************************************/
     /********************************PROCCESS MENU******************************************/
-    if (argc == 7) {
-        if (strcmp(argv[1], "-o") == 0) {
-            test = fopen(argv[2], "w");
-            
-            if (test == NULL) {
-                fprintf(stderr, "There was a problem on file opening.\n");
-                exit(11);
-            }
-            test_b = 1;
-        } else if (strcmp(argv[3], "-o") == 0) {
-            test = fopen(argv[4], "w");
-            
-            if (test == NULL) {
-                fprintf(stderr, "There was a problem on file opening.\n");
-                exit(12);
-            }
-            test_b = 1;
-        } else if (strcmp(argv[5], "-o") == 0) {
-            test = fopen(argv[6], "w");
-            
-            if (test == NULL) {
-                fprintf(stderr, "There was a problem on file opening.\n");
-                exit(13);
-            }
-            test_b = 1;
-        }
-        
-        if (strcmp(argv[1], "-f") == 0) {
-            workb = fopen(argv[2], "w");
-            
-            if (workb == NULL) {
-                fprintf(stderr, "There was a problem on file opening.\n");
-                exit(14);
-            }
-            work_b=1;
-        } else if (strcmp(argv[3], "-f") == 0) {
-            workb = fopen(argv[4], "w");
-            
-            if (workb == NULL) {
-                fprintf(stderr, "There was a problem on file opening.\n");
-                exit(15);
-            }
-            work_b=1;
-        } else if (strcmp(argv[5], "-f") == 0) {
-            workb = fopen(argv[6], "w");
-            
-            if (workb == NULL) {
-                fprintf(stderr, "There was a problem on file opening.\n");
-                exit(16);
-            }
-            work_b=1;
-        }
-        
-        if (strcmp(argv[1], "-z") == 0) {
-            reg = (int) atoi(argv[2]);
-        } else if (strcmp(argv[3], "-z") == 0) {
-            reg = (int) atoi(argv[4]);
-        } else if (strcmp(argv[5], "-z") == 0) {
-            reg = (int) atoi(argv[6]);
-        }
-    } else if (argc == 5) {
-        if (strcmp(argv[1], "-o") == 0) {
-            test = fopen(argv[2], "w");
-            
-            if (test == NULL) {
-                fprintf(stderr, "There was a problem on file opening.\n");
-                exit(17);
-            }
-            test_b = 1;
-        } else if (strcmp(argv[3], "-o") == 0) {
-            test = fopen(argv[4], "w");
-            
-            if (test == NULL) {
-                fprintf(stderr, "There was a problem on file opening.\n");
-                exit(18);
-            }
-            test_b = 1;
-        }
-        
-        if (strcmp(argv[1], "-f") == 0) {
-            workb = fopen(argv[4], "w");
-            
-            if (workb == NULL) {
-                fprintf(stderr, "There was a problem on file opening.\n");
-                exit(19);
-            }
-            work_b=1;
-        } else if (strcmp(argv[3], "-f") == 0) {
-            workb = fopen(argv[5], "w");
-            
-            if (workb == NULL) {
-                fprintf(stderr, "There was a problem on file opening.\n");
-                exit(20);
-            }
-            work_b=1;
-        }
-        
-        if (strcmp(argv[1], "-z") == 0) {
-            reg = (int) atoi(argv[2]);
-        } else if (strcmp(argv[3], "-z") == 0) {
-            reg = (int) atoi(argv[4]);
-        }
-    } else if (argc == 3) {
-        if (strcmp(argv[1], "-o") == 0) {
-            test = fopen(argv[2], "w");
-            
-            if (test == NULL) {
-                fprintf(stderr, "There was a problem on file opening.\n");
-                exit(11);
-            }
-            test_b = 1;
-        }
-        
-        if (strcmp(argv[1], "-f") == 0) {            
-            workb = fopen(argv[2], "w");
-            
-            if (workb == NULL) {
-                fprintf(stderr, "There was a problem on file opening.\n");
-                exit(13);
-            }
-            work_b=1;
-        }
-        
-        if (strcmp(argv[1], "-z") == 0) {
-            reg = (int) atoi(argv[2]);
-        }
-    } else if (argc == 2) {
-        if (strcmp(argv[1], "-debug") == 0) {
-                debug_mode = 1;
-        }
+    if (argc > 1) {
+        for (i=1; i<argc;) {
+			if (strcmp(argv[i], "-o") == 0) {
+				test = fopen(argv[i+1], "w");
+				
+				if (test == NULL) {
+					fprintf(stderr, "There was a problem on file opening.\n");
+					exit(11);
+				}
+				test_b = 1;
+				i += 2;
+			} else if (strcmp(argv[i], "-f") == 0) {
+				workb = fopen(argv[i+1], "w");
+				
+				if (workb == NULL) {
+					fprintf(stderr, "There was a problem on file opening.\n");
+					exit(14);
+				}
+				work_b=1;
+				i += 2;
+			} else if (strcmp(argv[i], "-z") == 0) {
+				reg = (int) atoi(argv[i+1]);
+				i += 2;
+			} else if (strcmp(argv[i], "-debug") == 0) {
+					debug_mode = 1;
+					i ++;
+			} else if (strcmp(argv[i], "-nocompare") == 0) {
+				no_compare = 1;
+				i ++;
+			}
+		}
     } else {
         fprintf(stderr, "./prg <-o> <fsim output> <-f> <Do script for Workbench> <-r> <start stage register>\n");
     }
@@ -312,11 +213,11 @@ int main(int argc, char **argv){
      * 
     */
     start = clock();    //start time.
-    if (ans == 5 || ans == 7 || ans == 9 || ans == 10) {
+    if (ans == 5 || ans == 7 || ans == 9 || ans == 10 || ans == 12) {
     	start_counter = 1;
         stop = (unsigned long long int) N1;
         up_limit = (unsigned long long int) N1;
-    } else if (ans == 6 || ans == 2 || ans == 8) {
+    } else if (ans == 6 || ans == 2 || ans == 8 || ans == 11) {
     	start_counter = 1;
         stop = (unsigned long long int) N2;
         up_limit = (unsigned long long int) N2;
@@ -378,7 +279,7 @@ int main(int argc, char **argv){
            	}
             
             if (debug_mode) {
-                printf("Round: %llu, cnt[%llu] = ", idx, cnt_c);
+                printf("Round: %llu, cnt[%llu] = ", idx-n, cnt_c);
                 printBinary(cnt, k, stdout);
                 printf(", Reg = ");
                 printBinary(reg, k, stdout);
@@ -387,20 +288,20 @@ int main(int argc, char **argv){
             
             binaryToStr(reg, k, reg1);
             for (i_reg=0; i_reg<regs; i_reg++) {
-                if (M > idx-1) {
+                //if (M > idx-1) {
                     if (ans != 10) {
-                        mSeqs[i_reg * M + mSeq1_idx[i_reg]] = reg1[k-1-i_reg];
+                        mSeqs[i_reg * M + mSeq1_idx[i_reg]] = reg1[/*k-1-i_reg*/0+i_reg];
                     } else {
                         mSeqs[i_reg * M + mSeq1_idx[i_reg]] = reg1[k-1-i_reg-((~((reg>>(1)&0x1) ^ reg&0x1)) & 0x1)];
                     }
-                }
+                //}
 				mSeq1_idx[i_reg]++;
             }
             
             
             cnt_c/*cnt_idx*/ = (++cnt_c/*cnt_idx*/) % up_limit;
             /*Go to next state - At each counter type.*/
-            if ((ans == 9 || ans == 7 || ans == 10) && non_linear == 1 && cnt == (pow(2, k)-1)) {
+            if ((ans == 9 || ans == 7 || ans == 10 || ans == 12) && non_linear == 1 && cnt == (pow(2, k)-1)) {
            		cnt == 1;
            		non_linear = 0;
            	} else if (ans == 5 && non_linear == 1 && cnt == 1) {
@@ -428,211 +329,234 @@ int main(int argc, char **argv){
     if (debug_mode) printf("\n\n**************************%d-TUPLES******************************\n", tuples);
     printf("\n****************************STATISTICS********************************\n");
     
-    if (M <= idx) {
-        if (ans != 9) {
-            for(i_reg=0; i_reg<regs; i_reg++) {
-                /*
-                 * For debug mode.
-                */
-                if (debug_mode) printf("\n***M sequence for nr. %d Shift-Register: ", i_reg);
-                
-                arr1_idx[i_reg] = 0;
-                reached = 0;
-                min_cycl_per = (double) 0;
-                goal[i_reg] = 0;
-                tmp_per[i_reg] = 0;
-                
-                for(i=0; i<tuples && reached == 0; i++) {
-                    /*
-                     * Check four multipled patterns.
-                     * If current parr1ern is already counted, throw it away.
-                    */
-                    there_is = 0;
-                    for (ii=0; ii<arr1_idx[i_reg] && there_is == 0; ii++) {
-                        if (strncmp(arrs[i_reg * M + ii], &mSeqs[i_reg * M + i], n * sizeof(char)) == 0) {
-                            there_is = 1;
-                        }
-                    }
-                    
-                    
-                    for (i_reg_c=0; i_reg_c<regs && i_reg_c < i_reg && there_is == 0; i_reg_c++) {
-                        for (ii=0; ii<arr1_idx[i_reg_c] && there_is == 0; ii++) {
-                            if (strncmp(arrs[i_reg_c * M + ii], &mSeqs[i_reg * M + i], n * sizeof(char)) == 0) {
-                                there_is = 1;
-                            }
-                        }
-                    }
-                    
-                    /*
-                     * For debug mode.
-                    */
-                    if (debug_mode) printf("%c", mSeqs[i_reg * M + i]);
-                    
-                    /*
-                     * If current pattern isn't counted or is the 1st pattern
-                     *   then we keep it at "arrs[i_reg]" array.
-                    */
-                    
-                    if (there_is == 0 || arr1_idx[i_reg] == 0) {
-                        arrs[i_reg * M + arr1_idx[i_reg]] = &mSeqs[i_reg * M + i];
-                        arr1_idx[i_reg]++;
-                        
-                        tmp_per[i_reg] = (double) arr1_idx[i_reg]/(pow(2, n))* (double) 100;
-                    }
-                    
-                    if (test_b) fprintf(test, "\n%llu:", test_cycle++);
-                    if (work_b) fprintf(workb, "force -freeze %s ", signal);
-                    for(j=n; j-- > 0;) {
-                        if (test_b) fprintf(test, "%c", mSeqs[i_reg * M + (i+j)]);
-                        if (work_b) fprintf(workb, "%c", mSeqs[i_reg * M + (i+j)]);
-                    }
-                    
-                    if (work_b) fprintf(workb, " 0\nrun\n");
-                    
-                    
-                    if (tmp_per[i_reg] == (double) 100) {
-                        reached = 1;
-                    }
-                    
-                    if (tmp_per[i_reg] > min_cycl_per) {
-                        goal[i_reg]++;
-                        min_cycl_per = tmp_per[i_reg];
-                    }
-                    else if (tmp_per[i_reg] == min_cycl_per && tmp_per[i_reg] != (double) 100) {
-                        goal[i_reg]++;
-                    }
-                }
-                
-                printf("\n***\tNumber of sequence patterns              :%llu\n", arr1_idx[i_reg]);
-                printf("***\tn-coverage                               :%f%%\n", tmp_per[i_reg]);
-                if (((double) arr1_idx[i_reg]/(pow(2, n))*100) >= (double) 100) {
-                    printf("***\t100%% Reached at                        :%llu cycles\n", goal[i_reg]);
-                } else {
-                    printf("***\tBiggest Reached at                       :%llu cycles\n", goal[i_reg]);
-                }
-            }
-        } else {
-            for(i_reg=0; i_reg<regs; i_reg++) {
-                arr1_idx[i_reg] = 0;
-                goal[i_reg] = 0;
-                tmp_per[i_reg] = 0;
-                /*
-                 * For debug mode.
-                */
-                //if (debug_mode) printf("\n***M sequence for nr. %d Shift-Register: ", i_reg);
-            }
-            reached = 0;
-            min_cycl_per = (double) 0;
-            
-            for(i=0; i<tuples; i++) {
-                /*reg_idx = 0;
-                
-                for(i_reg=0; i_reg<regs; i_reg++) {
-                    /*
-                     * Check four multipled patterns.
-                     * If current parr1ern is already counted, throw it away.
-                    */
-                /*    if (i_reg == 0) {
-                        for(j=halt+halt_d; j-- > 0;) {
-                            reg2[reg_idx++] = mSeqs[i_reg * M + (i+j)];
-                        }
-                    } else {
-                        for(j=halt; j -- > 0;) {
-                            reg2[reg_idx++] = mSeqs[i_reg * M + (i+j)];
-                        }
-                    }
-                }
-                
-                there_is = 0;
-                for (ii=0; ii<mSeqs1_idx && there_is == 0; ii+=n) {
-                    if (strncmp(&mSeqs1[ii], reg2, n * sizeof(char)) == 0) {
-                        there_is = 1;
-                    }
-                }*/
-                
-                
-                if (test_b) fprintf(test, "\n%llu:", test_cycle++);
-                if (work_b) fprintf(workb, "force -freeze %s ", signal);
-                
-                for(i_reg=0; i_reg<regs; i_reg++) {
-                    if (i_reg == 0) {
-                        for(j=halt+halt_d; j -- > 0;) {
-                            if (test_b) fprintf(test, "%c", mSeqs[i_reg * M + (i+j)]);
-                            if (work_b) fprintf(workb, "%c", mSeqs[i_reg * M + (i+j)]);
-                            
-                            mSeqs1[mSeqs1_idx++] = mSeqs[i_reg * M + (i+j)];
-                        }
-                    } else {
-                        for(j=halt; j -- > 0;) {
-                            if (test_b) fprintf(test, "%c", mSeqs[i_reg * M + (i+j)]);
-                            if (work_b) fprintf(workb, "%c", mSeqs[i_reg * M + (i+j)]);
-                            
-                            mSeqs1[mSeqs1_idx++] = mSeqs[i_reg * M + (i+j)];
-                        }
-                    }
-                    if (there_is != 0) {
-                        arr1_idx[i_reg]++;
-                        tmp_per[i_reg] = (double) arr1_idx[i_reg]/(pow(2, n))* (double) 100;
-                    }
-                    
-                }
-                
-                for(i_reg=0; i_reg<regs; i_reg++) {
-                    if (tmp_per[i_reg] == (double) 100) {
-                        reached = 1;
-                    }
-                        
-                    if (tmp_per[i_reg] > min_cycl_per) {
-                        goal[i_reg]++;
-                        min_cycl_per = tmp_per[i_reg];
-                    }
-                    else if (tmp_per[i_reg] == min_cycl_per && tmp_per[i_reg] != (double) 100) {
-                        goal[i_reg]++;
-                    }
-                }
-                if (work_b) fprintf(workb, " 0\nrun\n");
-            }
-            
-            printf("\n***\tNumber of sequence patterns              :%llu\n", arr1_idx[0]);
-            printf("***\tn-coverage                               :(%d) %f%%\n", min_cycl_per);
-            if (((double) arr1_idx[0]/(pow(2, n))*100) >= (double) 100) {
-                printf("***\t100%% Reached at                         :%llu cycles\n", goal[0]);
-            } else {
-                printf("***\tBiggest Reached at                       :%llu cycles\n", goal[0]);
-            }
-        }
-        
-        printf("***\tNumber of cycles                         :%llu\n", idx-n);
-        
-        
-        
-        printf("***\tM sequence (%llu-bits)\n", M);
-        printf("***\tTime duration msec(s)                    :%f\n", cpu_time_used*(double) 1000);
-        printf("**********************************************************************\n");
-        
-        if (regs > 1 && ans == 9) {
-            printf("*****************************SIMILARITY*******************************\n");
-            for(i_reg=0; i_reg<regs; i_reg++) {
-                for(i_reg_c=0; i_reg_c<regs; i_reg_c++) {
-                    
-                    if (i_reg < i_reg_c) {
-                        there_is = 0;
-                        
-                        for (ii=0; ii<N1; ii++) {
-                            for (iii=0; iii<N1; iii++) {
-                                if (strncmp(&mSeqs[i_reg * M + ii], &mSeqs[i_reg_c * M + iii], n * sizeof(char)) != 0) {
-                                    there_is++;
-                                }
-                            }
-                        }
-                        printf("***\tRegister%d[%llu] and Register%d[%llu] has similar %d patterns.\n\n", i_reg, goal[i_reg], i_reg_c, goal[i_reg_c], there_is);
-                    }
-                }
-            }
-        }
-    } else {
-        fprintf(stderr, "Message: You must Provide M sequence less or equal than cycles of Accumulator.\n");
-    }
+    
+	if (ans != 9) {
+		for(i_reg=0; i_reg<regs; i_reg++) {
+			/*
+			 * For debug mode.
+			*/
+			if (debug_mode) printf("\n***\tM sequence for nr. %d Shift-Register: ", i_reg);
+			
+			arr1_idx[i_reg] = 0;
+			reached = 0;
+			min_cycl_per = (double) 0;
+			goal[i_reg] = 0;
+			tmp_per[i_reg] = 0;
+			
+			for(i=0; i<tuples && (reached == 0 || debug_mode == 1); i++) {
+				/*
+				 * Check four multipled patterns.
+				 * If current parr1ern is already counted, throw it away.
+				*/
+				there_is = 0;
+				for (ii=0; ii<arr1_idx[i_reg] && there_is == 0 && no_compare == 0; ii++) {
+					if (strncmp(arrs[i_reg * M + ii], &mSeqs[i_reg * M + i], n * sizeof(char)) == 0) {
+						there_is = 1;
+					}
+				}
+				
+				
+				for (i_reg_c=0; i_reg_c<regs && i_reg_c < i_reg && there_is == 0 && no_compare == 0; i_reg_c++) {
+					for (ii=0; ii<arr1_idx[i_reg_c] && there_is == 0; ii++) {
+						if (strncmp(arrs[i_reg_c * M + ii], &mSeqs[i_reg * M + i], n * sizeof(char)) == 0) {
+							there_is = 1;
+						}
+					}
+				}
+				
+				/*
+				 * For debug mode.
+				*/
+				if (debug_mode) printf("%c", mSeqs[i_reg * M + i]);
+				
+				/*
+				 * If current pattern isn't counted or is the 1st pattern
+				 *   then we keep it at "arrs[i_reg]" array.
+				*/
+				
+				if (no_compare == 0) {
+					if (there_is == 0 || arr1_idx[i_reg] == 0) {
+						arrs[i_reg * M + arr1_idx[i_reg]] = &mSeqs[i_reg * M + i];
+						arr1_idx[i_reg]++;
+						
+						tmp_per[i_reg] = (double) arr1_idx[i_reg]/(pow(2, n))* (double) 100;
+						
+						if (test_b) fprintf(test, "\n%llu:", test_cycle++);
+						if (work_b) fprintf(workb, "force -freeze %s ", signal);
+						for(j=n; j-- > 0;) {
+							if (test_b) fprintf(test, "%c", mSeqs[i_reg * M + (i+j)]);
+							if (work_b) fprintf(workb, "%c", mSeqs[i_reg * M + (i+j)]);
+						}
+						if (work_b) fprintf(workb, " 0\nrun\n");
+					}
+				} else {
+				
+					if (test_b) fprintf(test, "\n%llu:", test_cycle++);
+					if (work_b) fprintf(workb, "force -freeze %s ", signal);
+					for(j=n; j-- > 0;) {
+						if (test_b) fprintf(test, "%c", mSeqs[i_reg * M + (i+j)]);
+						if (work_b) fprintf(workb, "%c", mSeqs[i_reg * M + (i+j)]);
+					}
+					if (work_b) fprintf(workb, " 0\nrun\n");
+				}
+				
+				if (tmp_per[i_reg] == (double) 100) {
+					reached = 1;
+				}
+				
+				if (tmp_per[i_reg] > min_cycl_per) {
+					goal[i_reg]++;
+					min_cycl_per = tmp_per[i_reg];
+				}
+				else if (tmp_per[i_reg] == min_cycl_per && tmp_per[i_reg] != (double) 100) {
+					goal[i_reg]++;
+				}
+			}
+			
+			printf("\n***\tNumber of sequence patterns              :%llu\n", arr1_idx[i_reg]);
+			printf("***\tTuples                                   :%llu\n", tuples);
+			if (no_compare == 0) {
+				printf("***\tn-coverage                               :%f%%\n", tmp_per[i_reg]);
+				if (((double) arr1_idx[i_reg]/(pow(2, n))*100) >= (double) 100) {
+					printf("***\t100%% Reached at                        :%llu cycles\n", goal[i_reg]);
+				} else {
+					printf("***\tBiggest Reached at                       :%llu cycles\n", goal[i_reg]);
+				}
+			}
+		}
+	} else {
+		for(i_reg=0; i_reg<regs; i_reg++) {
+			arr1_idx[i_reg] = 0;
+			goal[i_reg] = 0;
+			tmp_per[i_reg] = 0;
+			/*
+			 * For debug mode.
+			*/
+			if (debug_mode) {
+				printf("\n***\tM sequence for nr. %d Shift-Register: ", i_reg);
+				for (i=0; i<mSeq1_idx[i_reg]; i++) {
+					printf("%c", mSeqs[i_reg * M + i]);
+				}
+			}
+		}
+		reached = 0;
+		min_cycl_per = (double) 0;
+		
+		for(i=0; i<tuples; i++) {
+			reg_idx = 0;
+			
+			for(i_reg=0; i_reg<regs && no_compare == 0; i_reg++) {
+				/*
+				 * Check four multipled patterns.
+				 * If current parr1ern is already counted, throw it away.
+				*/
+			    if (i_reg == 0) {
+					for(j=halt+halt_d; j-- > 0;) {
+						reg2[reg_idx++] = mSeqs[i_reg * M + (i+j)];
+					}
+				} else {
+					for(j=halt; j -- > 0;) {
+						reg2[reg_idx++] = mSeqs[i_reg * M + (i+j)];
+					}
+				}
+			}
+			
+			there_is = 0;
+			for (ii=0; ii<mSeqs1_idx && there_is == 0 && no_compare == 0; ii+=n) {
+				if (strncmp(&mSeqs1[ii], reg2, n * sizeof(char)) == 0) {
+					there_is = 1;
+				}
+			}
+			
+			
+			if ((no_compare == 0 && there_is == 0) || no_compare == 1) {
+				if (test_b) fprintf(test, "\n%llu:", test_cycle++);
+				if (work_b) fprintf(workb, "force -freeze %s ", signal);
+			}
+			
+			for(i_reg=0; i_reg<regs; i_reg++) {
+				if ((no_compare == 0 && there_is == 0 ) || no_compare == 1) {
+					if (i_reg == 0) {
+						for(j=halt+halt_d; j -- > 0;) {
+							if (test_b) fprintf(test, "%c", mSeqs[i_reg * M + (i+j)]);
+							if (work_b) fprintf(workb, "%c", mSeqs[i_reg * M + (i+j)]);
+							
+							mSeqs1[mSeqs1_idx++] = mSeqs[i_reg * M + (i+j)];
+						}
+					} else {
+						for(j=halt; j -- > 0;) {
+							if (test_b) fprintf(test, "%c", mSeqs[i_reg * M + (i+j)]);
+							if (work_b) fprintf(workb, "%c", mSeqs[i_reg * M + (i+j)]);
+							
+							mSeqs1[mSeqs1_idx++] = mSeqs[i_reg * M + (i+j)];
+						}
+					}
+				}
+				if (no_compare == 0 && there_is != 0) {
+					arr1_idx[i_reg]++;
+					tmp_per[i_reg] = (double) arr1_idx[i_reg]/(pow(2, n))* (double) 100;
+				}
+				
+			}
+			
+			for(i_reg=0; i_reg<regs && no_compare == 0; i_reg++) {
+				if (tmp_per[i_reg] == (double) 100) {
+					reached = 1;
+				}
+					
+				if (tmp_per[i_reg] > min_cycl_per) {
+					goal[i_reg]++;
+					min_cycl_per = tmp_per[i_reg];
+				}
+				else if (tmp_per[i_reg] == min_cycl_per && tmp_per[i_reg] != (double) 100) {
+					goal[i_reg]++;
+				}
+			}
+			if ((no_compare == 0 && there_is == 0) || no_compare == 1) {
+				if (work_b) fprintf(workb, " 0\nrun\n");
+			}
+		}
+		
+		printf("\n***\tNumber of sequence patterns              :%llu\n", arr1_idx[0]);
+		printf("***\tTuples                                   :%llu\n", tuples);
+		if (no_compare == 0) {
+			printf("***\tn-coverage                               :(%d) %f%%\n", min_cycl_per);
+			if (((double) arr1_idx[0]/(pow(2, n))*100) >= (double) 100) {
+				printf("***\t100%% Reached at                         :%llu cycles\n", goal[0]);
+			} else {
+				printf("***\tBiggest Reached at                       :%llu cycles\n", goal[0]);
+			}
+		}
+	}
+	
+	printf("***\tNumber of cycles                         :%llu\n", idx-n);
+	
+	
+	
+	printf("***\tM sequence (%llu-bits)\n", M);
+	printf("***\tTime duration msec(s)                    :%f\n", cpu_time_used*(double) 1000);
+	printf("**********************************************************************\n");
+	
+	if (regs > 1 && ans == 9) {
+		printf("*****************************SIMILARITY*******************************\n");
+		for(i_reg=0; i_reg<regs; i_reg++) {
+			for(i_reg_c=0; i_reg_c<regs; i_reg_c++) {
+				
+				if (i_reg < i_reg_c) {
+					there_is = 0;
+					
+					for (ii=0; ii<N1; ii++) {
+						for (iii=0; iii<N1; iii++) {
+							if (strncmp(&mSeqs[i_reg * M + ii], &mSeqs[i_reg_c * M + iii], n * sizeof(char)) != 0) {
+								there_is++;
+							}
+						}
+					}
+					printf("***\tRegister%d[%llu] and Register%d[%llu] has similar %d patterns.\n\n", i_reg, goal[i_reg], i_reg_c, goal[i_reg_c], there_is);
+				}
+			}
+		}
+	}
     
     
     
@@ -706,6 +630,14 @@ unsigned long long int next_state(const int ans, const unsigned long long int cn
         case 10:
             //cnt = (unsigned long long int) malloc(sizeof(unsigned long long int) * N1);
 		  	result = nfsr_counter_next_state(k, cnt);
+		  	break;
+        case 11:
+            //cnt = (unsigned long long int) malloc(sizeof(unsigned long long int) * N1);
+		  	result = lfsr_counter_next_state_external(k, cnt);
+		  	break;
+        case 12:
+            //cnt = (unsigned long long int) malloc(sizeof(unsigned long long int) * N1);
+		  	result = nfsr_counter_next_state_external(k, cnt);
 		  	break;
 		default:
 			result = 0;

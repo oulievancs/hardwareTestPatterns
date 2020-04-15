@@ -1,7 +1,9 @@
 ----------------------------------------------------------------------
 ./prg <arthument>
 
-***** <-o> <fsim output>
-***** <-f> <Do script for Workbench>
-***** <-r> <start stage register>
+***** <-o> <fsim output>				get an output for fsim
+***** <-f> <Do script for Workbench>	get an output for modelsim simulator
+***** <-r> <start stage register>		start the countr from a specific value
+***** <-nocompare> 						no comparation between tuples
+***** <-debug> 							get debug output
 ----------------------------------------------------------------------
