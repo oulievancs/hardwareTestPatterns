@@ -31,7 +31,7 @@ unsigned long long int next_state(const int ans, const unsigned long long int cn
  * Start main program.
 */
 int main(int argc, char **argv){
-    int k, n, ans, reached, non_linear;
+    int k=0, n=0, ans=0, reached, non_linear;
     int there_is, test_b=0, work_b=0, debug_mode=0, no_compare=0, regs=1, halt, halt_d;
     unsigned long long int /***/cnt, cnt_c, /*cnt_idx=0,*/ idx=0, *mSeq1_idx=NULL, *arr1_idx=NULL, tuples, reg=1, M, *goal=NULL, test_cycle=1, reg_idx;
     unsigned long long int start_counter, start_reg = 0, stop, up_limit, N, N1, N2;
@@ -46,11 +46,68 @@ int main(int argc, char **argv){
     printLogo();
 	
 	/********************************USER INPUT*********************************************/
-	printf("--Enter K: ");
-    scanf("%d", &k);
+	/***************************************************************************************/
+    /********************************PROCCESS MENU******************************************/
+    if (argc > 1) {
+        for (i=1; i<argc;) {
+			if (strcmp(argv[i], "-o") == 0) {
+				test = fopen(argv[i+1], "w");
+				
+				if (test == NULL) {
+					fprintf(stderr, "There was a problem on file opening.\n");
+					exit(11);
+				}
+				test_b = 1;
+				i += 2;
+			} else if (strcmp(argv[i], "-f") == 0) {
+				workb = fopen(argv[i+1], "w");
+				
+				if (workb == NULL) {
+					fprintf(stderr, "There was a problem on file opening.\n");
+					exit(14);
+				}
+				work_b=1;
+				i += 2;
+			} else if (strcmp(argv[i], "-z") == 0) {
+				reg = (int) atoi(argv[i+1]);
+				i += 2;
+			} else if (strcmp(argv[i], "-debug") == 0) {
+					debug_mode = 1;
+					i ++;
+			} else if (strcmp(argv[i], "-nocompare") == 0) {
+				no_compare = 1;
+				i ++;
+			} else if (strcmp(argv[i], "-k") == 0) {
+				k = (int) atoi(argv[i+1]);
+				i += 2;
+			} else if (strcmp(argv[i], "-n") == 0) {
+				n = (int) atoi(argv[i+1]);
+				i += 2;
+			} else if (strcmp(argv[i], "-m") == 0) {
+				ans = (int) atoi(argv[i+1]);
+				i += 2;
+			}
+		}
+    } else {
+        fprintf(stderr, "./prg <-o> <fsim output> <-f> <Do script for Workbench> <-r> <start stage register>\n");
+    }
     
-    printf("--Enter n-bit coverage: ");
-    scanf("%d", &n);
+    printf("\n\n\n");
+    
+    if (work_b) {
+        printf("--Give Signal name: ");
+        scanf("%s", signal);
+    }
+    /***************************************************************************************/
+	if (k==0) {
+		printf("--Enter K: ");
+		scanf("%d", &k);
+	}
+    
+    if (n == 0) {
+		printf("--Enter n-bit coverage: ");
+		scanf("%d", &n);
+	}
 	/***************************************************************************************/
 	
 	/******************************Prepare Operations****************************************/
@@ -59,15 +116,14 @@ int main(int argc, char **argv){
     N2 = (unsigned long long int) pow(2, k) - 1;
 	
 	
-    
-    printf("=====MENU=====\n");
-    printf("Select a counter type:\n");
-    printf("[1]: Regular Counter.\n[2]: Gray Counter.\n[3]: Regular Counter with step.\n[4]: Add after N cycles (N-1).\n[5]: 1,1,....,N-1 sequence counter.\n[6]: LFSR - internal counter.\n[7]: NFSR - internal counter.\n[8]: NFSR non-linear.\n[9]: NFSR counter and n shift registers.\n[10]: NFSR non-linear extra xor.\n[11]: LFSR - external counter.[12]: NFSR - external counter.\n\n");
-    
-    do {
+    while (!(ans == 1 || ans == 2 || ans == 3 || ans == 4 || ans == 5 || ans == 6 || ans == 7 || ans == 8 || ans == 9 || ans == 10 || ans == 11 || ans == 12)) {
+		printf("=====MENU=====\n");
+		printf("Select a counter type:\n");
+		printf("[1]: Regular Counter.\n[2]: Gray Counter.\n[3]: Regular Counter with step.\n[4]: Add after N cycles (N-1).\n[5]: 1,1,....,N-1 sequence counter.\n[6]: LFSR - internal counter.\n[7]: NFSR - internal counter.\n[8]: NFSR non-linear.\n[9]: NFSR counter and n shift registers.\n[10]: NFSR non-linear extra xor.\n[11]: LFSR - external counter.\n[12]: NFSR - external counter.\n\n");
+		
         printf("--Give option:\t");
         scanf("%d", &ans);
-    } while (!(ans == 1 || ans == 2 || ans == 3 || ans == 4 || ans == 5 || ans == 6 || ans == 7 || ans == 8 || ans == 9 || ans == 10 || ans == 11 || ans == 12));
+    }
 	
 	
 	/*Calculate M sequence as Accumulator Cycles number.*/
@@ -158,50 +214,7 @@ int main(int argc, char **argv){
     printf("----------------------------------------------------------------------\n");
 	
 	
-    /***************************************************************************************/
-    /********************************PROCCESS MENU******************************************/
-    if (argc > 1) {
-        for (i=1; i<argc;) {
-			if (strcmp(argv[i], "-o") == 0) {
-				test = fopen(argv[i+1], "w");
-				
-				if (test == NULL) {
-					fprintf(stderr, "There was a problem on file opening.\n");
-					exit(11);
-				}
-				test_b = 1;
-				i += 2;
-			} else if (strcmp(argv[i], "-f") == 0) {
-				workb = fopen(argv[i+1], "w");
-				
-				if (workb == NULL) {
-					fprintf(stderr, "There was a problem on file opening.\n");
-					exit(14);
-				}
-				work_b=1;
-				i += 2;
-			} else if (strcmp(argv[i], "-z") == 0) {
-				reg = (int) atoi(argv[i+1]);
-				i += 2;
-			} else if (strcmp(argv[i], "-debug") == 0) {
-					debug_mode = 1;
-					i ++;
-			} else if (strcmp(argv[i], "-nocompare") == 0) {
-				no_compare = 1;
-				i ++;
-			}
-		}
-    } else {
-        fprintf(stderr, "./prg <-o> <fsim output> <-f> <Do script for Workbench> <-r> <start stage register>\n");
-    }
     
-    printf("\n\n\n");
-    
-    if (work_b) {
-        printf("--Give Signal name: ");
-        scanf("%s", signal);
-    }
-    /***************************************************************************************/
     /***************************************************************************************/
     
     
@@ -400,16 +413,18 @@ int main(int argc, char **argv){
 					if (work_b) fprintf(workb, " 0\nrun\n");
 				}
 				
-				if (tmp_per[i_reg] == (double) 100) {
-					reached = 1;
-				}
-				
-				if (tmp_per[i_reg] > min_cycl_per) {
-					goal[i_reg]++;
-					min_cycl_per = tmp_per[i_reg];
-				}
-				else if (tmp_per[i_reg] == min_cycl_per && tmp_per[i_reg] != (double) 100) {
-					goal[i_reg]++;
+				if (no_compare == 0) {
+					if (tmp_per[i_reg] == (double) 100) {
+						reached = 1;
+					}
+					
+					if (tmp_per[i_reg] > min_cycl_per) {
+						goal[i_reg]++;
+						min_cycl_per = tmp_per[i_reg];
+					}
+					else if (tmp_per[i_reg] == min_cycl_per && tmp_per[i_reg] != (double) 100) {
+						//goal[i_reg]++;
+					}
 				}
 			}
 			
@@ -499,17 +514,19 @@ int main(int argc, char **argv){
 				
 			}
 			
-			for(i_reg=0; i_reg<regs && no_compare == 0; i_reg++) {
-				if (tmp_per[i_reg] == (double) 100) {
-					reached = 1;
-				}
-					
-				if (tmp_per[i_reg] > min_cycl_per) {
-					goal[i_reg]++;
-					min_cycl_per = tmp_per[i_reg];
-				}
-				else if (tmp_per[i_reg] == min_cycl_per && tmp_per[i_reg] != (double) 100) {
-					goal[i_reg]++;
+			if (no_compare == 0) {
+				for(i_reg=0; i_reg<regs && no_compare == 0; i_reg++) {
+					if (tmp_per[i_reg] == (double) 100) {
+						reached = 1;
+					}
+						
+					if (tmp_per[i_reg] > min_cycl_per) {
+						goal[i_reg]++;
+						min_cycl_per = tmp_per[i_reg];
+					}
+					else if (tmp_per[i_reg] == min_cycl_per && tmp_per[i_reg] != (double) 100) {
+						//goal[i_reg]++;
+					}
 				}
 			}
 			if ((no_compare == 0 && there_is == 0) || no_compare == 1) {
