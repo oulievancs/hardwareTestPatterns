@@ -335,7 +335,7 @@ int main(int argc, char **argv){
         do {
             idx++;
             
-            if (ans == 6 || ans == 11) {
+            if (ans == 6 || ans == 11 || ans == 16) {
             	reg = cnt;
            	} else {
            		reg = ADD(reg, cnt);
