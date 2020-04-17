@@ -19,4 +19,6 @@
 								[11]: LFSR - external counter.
 								[12]: NFSR - external counter.
 								[13]: NFSR - external non-linear and extra xor
+								[14]: NFSR - internal xor 2 high bit.
+								[15]: NFSR - external xor 2 high bit.
 ----------------------------------------------------------------------
