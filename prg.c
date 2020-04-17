@@ -42,8 +42,6 @@ int main(int argc, char **argv){
     
     /*For output file Stream.*/
     FILE *test, *workb;
-    
-    printLogo();
 	
 	/********************************USER INPUT*********************************************/
 	/***************************************************************************************/
@@ -118,7 +116,7 @@ int main(int argc, char **argv){
 				} else {
 					exit(1);
 				}
-			} else if (strcmp (argv[i], "-onlyconerage") == 0) {
+			} else if (strcmp (argv[i], "-onlycoverage") == 0) {
 				only_cov = 1;
 				i++;
 			}
@@ -127,7 +125,10 @@ int main(int argc, char **argv){
         fprintf(stderr, "./prg <-o> <fsim output> <-f> <Do script for Workbench> <-r> <start stage register>\n");
     }
     
-    if (!only_cov) printf("\n\n\n");
+    if (!only_cov) {
+		printLogo();
+		printf("\n\n\n");
+	}
     
     if (work_b) {
         printf("--Give Signal name: ");
