@@ -488,7 +488,7 @@ int main(int argc, char **argv){
 					}
 				}
 			} else {
-				printf("%f", tmp_per[i_reg]);
+				printf("%.3f", tmp_per[i_reg]);
 			}
 		}
 	} else {
@@ -598,7 +598,7 @@ int main(int argc, char **argv){
 				}
 			}
 		} else {
-			printf("%f", tmp_per[i_reg]);
+			printf("%.3f", tmp_per[i_reg]);
 		}
 	}
 	
