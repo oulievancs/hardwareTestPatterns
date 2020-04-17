@@ -1,11 +1,11 @@
 #!/bin/bash
 
-for i in {3..14}
+for i in {12..14}
 do
-	for j in {3..16}
+	for j in {14..16}
 	do
-		./prg -m 15 -n $j -k $i -onlycoverage
-		printf " "
+		./prg -m 7 -bit 1 -n $j -k $i -onlycoverage
+		printf "\t"
 	done
 	printf "\n"
 done
