@@ -8,3 +8,4 @@ run:
 	./prg
 clean:
 	rm prg
+
