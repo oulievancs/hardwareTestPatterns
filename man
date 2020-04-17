@@ -1,9 +1,22 @@
 ----------------------------------------------------------------------
 ./prg <arthument>
 
-***** <-o> <fsim output>				get an output for fsim
-***** <-f> <Do script for Workbench>	get an output for modelsim simulator
-***** <-r> <start stage register>		start the countr from a specific value
+***** <-o> <fsim output>					get an output for fsim
+***** <-f> <Do script for Workbench>				get an output for modelsim simulator
+***** <-r> <start stage register>				start the countr from a specific value
 ***** <-nocompare> 						no comparation between tuples
 ***** <-debug> 							get debug output
+***** <-m> <method>						[1]: Regular Counter.
+								[2]: Gray Counter.
+								[3]: Regular Counter with step.
+								[4]: Add after N cycles (N-1).
+						 		[5]: 1,1,....,N-1 sequence counter.
+								[6]: LFSR - internal counter.
+								[7]: NFSR - internal counter.
+								[8]: NFSR non-linear.
+								[9]: NFSR counter and n shift registers.
+								[10]: NFSR - internal non-linear extra xor.
+								[11]: LFSR - external counter.
+								[12]: NFSR - external counter.
+								[13]: NFSR - external non-linear and extra xor
 ----------------------------------------------------------------------
