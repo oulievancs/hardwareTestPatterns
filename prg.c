@@ -148,10 +148,10 @@ int main(int argc, char **argv){
     N2 = (unsigned long long int) pow(2, k) - 1;
 	
 	
-    while (!(ans == 1 || ans == 2 || ans == 3 || ans == 4 || ans == 5 || ans == 6 || ans == 7 || ans == 8 || ans == 9 || ans == 10 || ans == 11 || ans == 12 || ans == 13)) {
+    while (!(ans == 1 || ans == 2 || ans == 3 || ans == 4 || ans == 5 || ans == 6 || ans == 7 || ans == 8 || ans == 9 || ans == 10 || ans == 11 || ans == 12 || ans == 13 || ans == 14 || ans == 15)) {
 		printf("=====MENU=====\n");
 		printf("Select a counter type:\n");
-		printf("[1]: Regular Counter.\n[2]: Gray Counter.\n[3]: Regular Counter with step.\n[4]: Add after N cycles (N-1).\n[5]: 1,1,....,N-1 sequence counter.\n[6]: LFSR - internal counter.\n[7]: NFSR - internal counter.\n[8]: NFSR non-linear.\n[9]: NFSR counter and n shift registers.\n[10]: NFSR - internal non-linear extra xor.\n[11]: LFSR - external counter.\n[12]: NFSR - external counter.\n[13]: NFSR - external non-linear and extra xor\n\n");
+		printf("[1]: Regular Counter.\n[2]: Gray Counter.\n[3]: Regular Counter with step.\n[4]: Add after N cycles (N-1).\n[5]: 1,1,....,N-1 sequence counter.\n[6]: LFSR - internal counter.\n[7]: NFSR - internal counter.\n[8]: NFSR non-linear.\n[9]: NFSR counter and n shift registers.\n[10]: NFSR - internal non-linear extra xor.\n[11]: LFSR - external counter.\n[12]: NFSR - external counter.\n[13]: NFSR - external non-linear and extra xor.[14]: NFSR - internal xor 2 high bit.\n[15]: NFSR - external xor 2 high bit.\n\n");
 		
         printf("--Give option:\t");
         scanf("%d", &ans);
@@ -159,7 +159,7 @@ int main(int argc, char **argv){
 	
 	
 	/*Calculate M sequence as Accumulator Cycles number.*/
-    if (ans == 5 || ans == 7 || ans == 9 || ans == 10 || ans == 12 || ans == 13) {
+    if (ans == 5 || ans == 7 || ans == 9 || ans == 10 || ans == 12 || ans == 13 || ans == 14 || ans == 15) {
         M = (unsigned long long int)N1 * N1 + 2*n;
     } else if (ans == 2 || ans == 8) {
         M = (unsigned long long int)(N1 * N2 + n);
@@ -258,7 +258,7 @@ int main(int argc, char **argv){
      * 
     */
     start = clock();    //start time.
-    if (ans == 5 || ans == 7 || ans == 9 || ans == 10 || ans == 12 || ans == 13) {
+    if (ans == 5 || ans == 7 || ans == 9 || ans == 10 || ans == 12 || ans == 13 || ans == 14 || ans == 15) {
     	start_counter = 1;
         stop = (unsigned long long int) N1;
         up_limit = (unsigned long long int) N1;
@@ -335,15 +335,17 @@ int main(int argc, char **argv){
             for (i_reg=0; i_reg<regs; i_reg++) {
                 //if (M > idx-1) {
 		    if (ans == 6 || ans == 11) {
-			mSeqs[i_reg * M + mSeq1_idx[i_reg]] = reg1[i_reg];
+				mSeqs[i_reg * M + mSeq1_idx[i_reg]] = reg1[i_reg];
 		    } else if (ans == 10 || ans == 13) {
-			mSeqs[i_reg * M + mSeq1_idx[i_reg]] = reg1[k-1-i_reg-((~((reg>>(1)&0x1) ^ reg&0x1)) & 0x1)];
-			/*if (((((reg >> (k-1)) & 0x1) ^ ((reg >> (k-2)) & 0x1)) & 0x1)) {
-			        mSeqs[i_reg * M + mSeq1_idx[i_reg]] = '1';
+				mSeqs[i_reg * M + mSeq1_idx[i_reg]] = reg1[k-1-i_reg-((~((reg>>(1)&0x1) ^ reg&0x1)) & 0x1)];
+				
+		    } else if (ans == 14 || ans == 15) {
+				if (((((reg >> (k-1)) & 0x1) ^ ((reg >> (k-2)) & 0x1)) & 0x1)) {
+						mSeqs[i_reg * M + mSeq1_idx[i_reg]] = '1';
+				} else {
+						mSeqs[i_reg * M + mSeq1_idx[i_reg]] = '0';
+				}
 			} else {
-			        mSeqs[i_reg * M + mSeq1_idx[i_reg]] = '0';
-			}*/
-		    } else {
                         mSeqs[i_reg * M + mSeq1_idx[i_reg]] = reg1[k-1-i_reg-high_bit];
 		    }
 		    
@@ -354,7 +356,7 @@ int main(int argc, char **argv){
             
             cnt_c/*cnt_idx*/ = (++cnt_c/*cnt_idx*/) % up_limit;
             /*Go to next state - At each counter type.*/
-            if ((ans == 9 || ans == 7 || ans == 10 || ans == 12 || ans == 13) && non_linear == 1 && cnt == (pow(2, k)-1)) {
+            if ((ans == 9 || ans == 7 || ans == 10 || ans == 12 || ans == 13 || ans == 14 || ans == 15) && non_linear == 1 && cnt == (pow(2, k)-1)) {
            		cnt == 1;
            		non_linear = 0;
            	} else if (ans == 5 && non_linear == 1 && cnt == 1) {
@@ -676,27 +678,35 @@ unsigned long long int next_state(const int ans, const unsigned long long int cn
 		  	//cnt = (unsigned long long int) malloc(sizeof(unsigned long long int) * N1);
 		  	result = nfsr_counter_next_state(k, cnt);
 		  	break;
-            case 8:
-                        //cnt = (unsigned long long int) malloc(sizeof(unsigned long long int) * N1);
-		  	result = nfsr_counter_next_state(k, cnt);
-		  	break;
-            case 9:
-                        //cnt = (unsigned long long int) malloc(sizeof(unsigned long long int) * N1);
-		  	result = nfsr_counter_next_state(k, cnt);
-		  	break;
-            case 10:
-                        //cnt = (unsigned long long int) malloc(sizeof(unsigned long long int) * N1);
-		  	result = nfsr_counter_next_state_external(k, cnt);
-		  	break;
-            case 11:
-                        //cnt = (unsigned long long int) malloc(sizeof(unsigned long long int) * N1);
-		  	result = lfsr_counter_next_state_external(k, cnt);
-		  	break;
-            case 12:
-                        //cnt = (unsigned long long int) malloc(sizeof(unsigned long long int) * N1);
-		  	result = nfsr_counter_next_state_external(k, cnt);
-		  	break;
+		case 8:
+			//cnt = (unsigned long long int) malloc(sizeof(unsigned long long int) * N1);
+			result = nfsr_counter_next_state(k, cnt);
+			break;
+		case 9:
+			//cnt = (unsigned long long int) malloc(sizeof(unsigned long long int) * N1);
+			result = nfsr_counter_next_state(k, cnt);
+			break;
+		case 10:
+			//cnt = (unsigned long long int) malloc(sizeof(unsigned long long int) * N1);
+			result = nfsr_counter_next_state_external(k, cnt);
+			break;
+		case 11:
+			//cnt = (unsigned long long int) malloc(sizeof(unsigned long long int) * N1);
+			result = lfsr_counter_next_state_external(k, cnt);
+			break;
+		case 12:
+			//cnt = (unsigned long long int) malloc(sizeof(unsigned long long int) * N1);
+			result = nfsr_counter_next_state_external(k, cnt);
+			break;
 	    case 13:
+			//cnt = (unsigned long long int) malloc(sizeof(unsigned long long int) * N1);
+			result = nfsr_counter_next_state_external(k, cnt);
+			break;
+	    case 14:
+			//cnt = (unsigned long long int) malloc(sizeof(unsigned long long int) * N1);
+			result = nfsr_counter_next_state(k, cnt);
+			break;
+	    case 15:
 			//cnt = (unsigned long long int) malloc(sizeof(unsigned long long int) * N1);
 			result = nfsr_counter_next_state_external(k, cnt);
 			break;
