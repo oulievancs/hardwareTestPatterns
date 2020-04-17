@@ -31,7 +31,7 @@ unsigned long long int next_state(const int ans, const unsigned long long int cn
  * Start main program.
 */
 int main(int argc, char **argv){
-    int k=0, n=0, ans=0, reached, non_linear, high_bit=0;
+    int k=0, n=0, ans=0, reached, non_linear, high_bit=0, only_cov=0;
     int there_is, test_b=0, work_b=0, debug_mode=0, no_compare=0, regs=1, halt, halt_d;
     unsigned long long int /***/cnt, cnt_c, /*cnt_idx=0,*/ idx=0, *mSeq1_idx=NULL, *arr1_idx=NULL, tuples, reg=1, M, *goal=NULL, test_cycle=1, reg_idx;
     unsigned long long int start_counter, start_reg = 0, stop, up_limit, N, N1, N2;
@@ -118,13 +118,16 @@ int main(int argc, char **argv){
 				} else {
 					exit(1);
 				}
+			} else if (strcmp (argv[i], "-onlyconerage") == 0) {
+				only_cov = 1;
+				i++;
 			}
 		}
     } else {
         fprintf(stderr, "./prg <-o> <fsim output> <-f> <Do script for Workbench> <-r> <start stage register>\n");
     }
     
-    printf("\n\n\n");
+    if (!only_cov) printf("\n\n\n");
     
     if (work_b) {
         printf("--Give Signal name: ");
@@ -151,7 +154,7 @@ int main(int argc, char **argv){
     while (!(ans == 1 || ans == 2 || ans == 3 || ans == 4 || ans == 5 || ans == 6 || ans == 7 || ans == 8 || ans == 9 || ans == 10 || ans == 11 || ans == 12 || ans == 13 || ans == 14 || ans == 15)) {
 		printf("=====MENU=====\n");
 		printf("Select a counter type:\n");
-		printf("[1]: Regular Counter.\n[2]: Gray Counter.\n[3]: Regular Counter with step.\n[4]: Add after N cycles (N-1).\n[5]: 1,1,....,N-1 sequence counter.\n[6]: LFSR - internal counter.\n[7]: NFSR - internal counter.\n[8]: NFSR non-linear.\n[9]: NFSR counter and n shift registers.\n[10]: NFSR - internal non-linear extra xor.\n[11]: LFSR - external counter.\n[12]: NFSR - external counter.\n[13]: NFSR - external non-linear and extra xor.[14]: NFSR - internal xor 2 high bit.\n[15]: NFSR - external xor 2 high bit.\n\n");
+		printf("[1]: Regular Counter.\n[2]: Gray Counter.\n[3]: Regular Counter with step.\n[4]: Add after N cycles (N-1).\n[5]: 1,1,....,N-1 sequence counter.\n[6]: LFSR - internal counter.\n[7]: NFSR - internal counter.\n[8]: NFSR non-linear.\n[9]: NFSR counter and n shift registers.\n[10]: NFSR - internal non-linear extra xor.\n[11]: LFSR - external counter.\n[12]: NFSR - external counter.\n[13]: NFSR - external non-linear and extra xor.\n[14]: NFSR - internal xor 2 high bit.\n[15]: NFSR - external xor 2 high bit.\n\n");
 		
         printf("--Give option:\t");
         scanf("%d", &ans);
@@ -241,9 +244,11 @@ int main(int argc, char **argv){
         exit(14);
 	}
     
-    printf("\n\n\n");
-    printf("***********************ACCUMULATOR STARTED****************************\n");
-    printf("----------------------------------------------------------------------\n");
+    if (!only_cov) {
+		printf("\n\n\n");
+		printf("***********************ACCUMULATOR STARTED****************************\n");
+		printf("----------------------------------------------------------------------\n");
+	}
 	
 	
     
@@ -382,7 +387,7 @@ int main(int argc, char **argv){
     cpu_time_used = ((double) (end - start)) / CLOCKS_PER_SEC;      //calculate time duration.
     
     if (debug_mode) printf("\n\n**************************%d-TUPLES******************************\n", tuples);
-    printf("\n****************************STATISTICS********************************\n");
+    if (!only_cov) printf("\n****************************STATISTICS********************************\n");
     
     
 	if (ans != 9) {
@@ -470,15 +475,19 @@ int main(int argc, char **argv){
 				}
 			}
 			
-			printf("\n***\tNumber of sequence patterns              :%llu\n", arr1_idx[i_reg]);
-			printf("***\tTuples                                   :%llu\n", tuples);
-			if (no_compare == 0) {
-				printf("***\tn-coverage                               :%f%%\n", tmp_per[i_reg]);
-				if (((double) arr1_idx[i_reg]/(pow(2, n))*100) >= (double) 100) {
-					printf("***\t100%% Reached at                        :%llu cycles\n", goal[i_reg]);
-				} else {
-					printf("***\tBiggest Reached at                       :%llu cycles\n", goal[i_reg]);
+			if (!only_cov) {
+				printf("\n***\tNumber of sequence patterns              :%llu\n", arr1_idx[i_reg]);
+				printf("***\tTuples                                   :%llu\n", tuples);
+				if (no_compare == 0) {
+					printf("***\tn-coverage                               :%f%%\n", tmp_per[i_reg]);
+					if (((double) arr1_idx[i_reg]/(pow(2, n))*100) >= (double) 100) {
+						printf("***\t100%% Reached at                        :%llu cycles\n", goal[i_reg]);
+					} else {
+						printf("***\tBiggest Reached at                       :%llu cycles\n", goal[i_reg]);
+					}
 				}
+			} else {
+				printf("%f", tmp_per[i_reg]);
 			}
 		}
 	} else {
@@ -576,28 +585,34 @@ int main(int argc, char **argv){
 			}
 		}
 		
-		printf("\n***\tNumber of sequence patterns              :%llu\n", arr1_idx[0]);
-		printf("***\tTuples                                   :%llu\n", tuples);
-		if (no_compare == 0) {
-			printf("***\tn-coverage                               :(%d) %f%%\n", min_cycl_per);
-			if (((double) arr1_idx[0]/(pow(2, n))*100) >= (double) 100) {
-				printf("***\t100%% Reached at                         :%llu cycles\n", goal[0]);
-			} else {
-				printf("***\tBiggest Reached at                       :%llu cycles\n", goal[0]);
+		if (!only_cov) {
+			printf("\n***\tNumber of sequence patterns              :%llu\n", arr1_idx[0]);
+			printf("***\tTuples                                   :%llu\n", tuples);
+			if (no_compare == 0) {
+				printf("***\tn-coverage                               :(%d) %f%%\n", min_cycl_per);
+				if (((double) arr1_idx[0]/(pow(2, n))*100) >= (double) 100) {
+					printf("***\t100%% Reached at                         :%llu cycles\n", goal[0]);
+				} else {
+					printf("***\tBiggest Reached at                       :%llu cycles\n", goal[0]);
+				}
 			}
+		} else {
+			printf("%f", tmp_per[i_reg]);
 		}
 	}
 	
-	printf("***\tNumber of cycles                         :%llu\n", idx-n);
-	
-	
-	
-	printf("***\tM sequence (%llu-bits)\n", M);
-	printf("***\tTime duration msec(s)                    :%f\n", cpu_time_used*(double) 1000);
-	printf("**********************************************************************\n");
+	if (!only_cov) {
+		printf("***\tNumber of cycles                         :%llu\n", idx-n);
+		
+		
+		
+		printf("***\tM sequence (%llu-bits)\n", M);
+		printf("***\tTime duration msec(s)                    :%f\n", cpu_time_used*(double) 1000);
+		printf("**********************************************************************\n");
+	}
 	
 	if (regs > 1 && ans == 9) {
-		printf("*****************************SIMILARITY*******************************\n");
+		if (!only_cov) printf("*****************************SIMILARITY*******************************\n");
 		for(i_reg=0; i_reg<regs; i_reg++) {
 			for(i_reg_c=0; i_reg_c<regs; i_reg_c++) {
 				
@@ -611,7 +626,7 @@ int main(int argc, char **argv){
 							}
 						}
 					}
-					printf("***\tRegister%d[%llu] and Register%d[%llu] has similar %d patterns.\n\n", i_reg, goal[i_reg], i_reg_c, goal[i_reg_c], there_is);
+					if (!only_cov) printf("***\tRegister%d[%llu] and Register%d[%llu] has similar %d patterns.\n\n", i_reg, goal[i_reg], i_reg_c, goal[i_reg_c], there_is);
 				}
 			}
 		}
@@ -620,7 +635,7 @@ int main(int argc, char **argv){
     
     
     
-    printf("**********************************************************************\n");
+    if (!only_cov) printf("**********************************************************************\n");
     
     if (test_b) fclose(test);
     if (work_b) fclose(workb);
