@@ -7,6 +7,7 @@
 ***** <-nocompare> 						no comparation between tuples
 ***** <-debug> 							get debug output
 ***** <-onlycoverage>					get only coverage to standard output
+***** <-onlypatterns>					get only the number of patterns
 ***** <-m> <method>				[1]: Regular Counter + ACC.
 								[2]: Gray Counter + ACC.
 								[3]: Regular Counter with step + ACC.
