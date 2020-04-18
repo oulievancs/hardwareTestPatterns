@@ -152,10 +152,10 @@ int main(int argc, char **argv){
     N2 = (unsigned long long int) pow(2, k) - 1;
 	
 	
-    while (!(ans == 1 || ans == 2 || ans == 3 || ans == 4 || ans == 5 || ans == 6 || ans == 7 || ans == 8 || ans == 9 || ans == 10 || ans == 11 || ans == 12 || ans == 13 || ans == 14 || ans == 15 || ans == 16)) {
+    while (!(ans == 1 || ans == 2 || ans == 3 || ans == 4 || ans == 5 || ans == 6 || ans == 7 || ans == 8 || ans == 9 || ans == 10 || ans == 11 || ans == 12 || ans == 13 || ans == 14 || ans == 15 || ans == 16 || ans == 17)) {
 		printf("=====MENU=====\n");
 		printf("Select a counter type:\n");
-		printf("[1]: Regular Counter.\n[2]: Gray Counter.\n[3]: Regular Counter with step.\n[4]: Add after N cycles (N-1).\n[5]: 1,1,....,N-1 sequence counter.\n[6]: LFSR - internal counter.\n[7]: NFSR - internal counter.\n[8]: NFSR non-linear.\n[9]: NFSR counter and n shift registers.\n[10]: NFSR - internal non-linear extra xor.\n[11]: LFSR - external counter.\n[12]: NFSR - external counter.\n[13]: NFSR - external non-linear and extra xor.\n[14]: NFSR - internal xor 2 high bit.\n[15]: NFSR - external xor 2 high bit.\n[16]: LFSR - external squares (Giving a dimension).\n\n");
+		printf("[1]: Regular Counter + ACC.\n[2]: Gray Counter + ACC.\n[3]: Regular Counter with step + ACC.\n[4]: Add after N cycles (N-1) counter + ACC.\n[5]: 1,1,....,N-1 sequence counter + ACC.\n[6]: LFSR - internal counter.\n[7]: NFSR + ACC - internal counter.\n[8]: NFSR + ACC non-linear.\n[9]: NFSR + ACC counter and n shift registers.\n[10]: NFSR + ACC - internal non-linear extra xor.\n[11]: LFSR - external counter.\n[12]: NFSR + ACC - external counter.\n[13]: NFSR + ACC - external non-linear and extra xor.\n[14]: NFSR + ACC - internal xor 2 high bit.\n[15]: NFSR + ACC - external xor 2 high bit.\n[16]: LFSR - external squares (Giving a dimension).\n[17]: NFSR + ACC - external (Giving a dimension).\n\n");
 		
         printf("--Give option:\t");
         scanf("%d", &ans);
@@ -174,12 +174,14 @@ int main(int argc, char **argv){
 		M = (unsigned long long int)(N2 + 2*n);
     } else if (ans == 16) {
 		M = (unsigned long long int) (N2 * n + n);
+	} else if (ans == 17) {
+		M = (unsigned long long int) (N1 * N2 * n + n);
 	} else {
         M = (unsigned long long int)(N1 * N + n);
     }
     
     /*Calculating tuples.*/
-	if (ans == 16) {
+	if (ans == 16 || ans == 17) {
 		tuples = (unsigned long long int) ((M - pow(2, n)) + 1);
 	} else {
 		tuples = (unsigned long long int) ((M - n) + 1);
@@ -273,7 +275,7 @@ int main(int argc, char **argv){
      * 
     */
     start = clock();    //start time.
-    if (ans == 5 || ans == 7 || ans == 9 || ans == 10 || ans == 12 || ans == 13 || ans == 14 || ans == 15) {
+    if (ans == 5 || ans == 7 || ans == 9 || ans == 10 || ans == 12 || ans == 13 || ans == 14 || ans == 15 || ans == 17) {
     	start_counter = 1;
         stop = (unsigned long long int) N1;
         up_limit = (unsigned long long int) N1;
@@ -298,7 +300,7 @@ int main(int argc, char **argv){
      */
     reg = start_reg;
 	
-	if (ans != 16) {
+	if (ans != 16 && ans != 17) {
 		binaryToStr(start_reg, k, reg1);
 		if (ans != 9) {
 			for (i_reg=0; i_reg<regs; i_reg++) {
@@ -342,7 +344,7 @@ int main(int argc, char **argv){
            	}
             
             if (debug_mode) {
-                if (ans != 16) printf("Round: %llu, cnt[%llu] = ", idx-n, cnt_c);
+                if (ans != 16 && ans != 17) printf("Round: %llu, cnt[%llu] = ", idx-n, cnt_c);
 				else printf("Round: %llu, cnt[%llu] = ", idx, cnt_c);
                 printBinary(cnt, k, stdout);
                 printf(", Reg = ");
@@ -366,7 +368,7 @@ int main(int argc, char **argv){
 							mSeqs[i_reg * M + mSeq1_idx[i_reg]] = '0';
 					}
 					mSeq1_idx[i_reg]++;
-				} else if (ans == 16) {
+				} else if (ans == 16 || ans == 17) {
 					for (ii=0; ii<n; ii++) {
 						mSeqs[i_reg * M + mSeq1_idx[i_reg]] = reg1[k-1-ii];
 						mSeq1_idx[i_reg] ++;
@@ -382,7 +384,7 @@ int main(int argc, char **argv){
             
             cnt_c/*cnt_idx*/ = (++cnt_c/*cnt_idx*/) % up_limit;
             /*Go to next state - At each counter type.*/
-            if ((ans == 9 || ans == 7 || ans == 10 || ans == 12 || ans == 13 || ans == 14 || ans == 15) && non_linear == 1 && cnt == (pow(2, k)-1)) {
+            if ((ans == 9 || ans == 7 || ans == 10 || ans == 12 || ans == 13 || ans == 14 || ans == 15 || ans == 17) && non_linear == 1 && cnt == (pow(2, k)-1)) {
            		cnt == 1;
            		non_linear = 0;
            	} else if (ans == 5 && non_linear == 1 && cnt == 1) {
@@ -391,7 +393,7 @@ int main(int argc, char **argv){
            	}else {
             	cnt = next_state(ans, cnt, k);
            	}
-        } while (!(cnt_c/*ctn_idx*/ == stop%up_limit || idx == M || (ans == 16 && idx == M/n)));
+        } while (!(cnt_c/*ctn_idx*/ == stop%up_limit || idx == M || ((ans == 16 || ans == 17) && idx == M/n)));
         
         if (ans == 3) {
             stop = (++stop) % up_limit;
@@ -399,7 +401,7 @@ int main(int argc, char **argv){
         } else if (ans == 4) {
             reg = ADD(reg, up_limit+1);
         }
-    } while(!/*(reg % (unsigned long long int)pow(2, k)) != 0*/(idx == M || (ans == 16 && idx == M/n)));
+    } while(!/*(reg % (unsigned long long int)pow(2, k)) != 0*/(idx == M || ((ans == 16 || ans == 17) && idx == M/n)));
     
     
     
@@ -410,7 +412,7 @@ int main(int argc, char **argv){
     if (debug_mode) printf("\n\n**************************%d-TUPLES******************************\n", tuples);
     if (!only_cov) printf("\n****************************STATISTICS********************************\n");
     
-    if (ans == 16) {
+    if (ans == 16 || ans == 17) {
 		/*
 		 * For debug mode.
 		*/
@@ -437,7 +439,11 @@ int main(int argc, char **argv){
 			/*
 			 * For debug mode.
 			*/
-			if (debug_mode) printf("%c", mSeqs[0 * M + i]);
+			if (debug_mode) {
+				for(j=n; j-- > 0;) {
+					printf("%c", mSeqs[0 * M + (i+j)]);
+				}
+			}
 			
 			/*
 			 * If current pattern isn't counted or is the 1st pattern
@@ -846,6 +852,10 @@ unsigned long long int next_state(const int ans, const unsigned long long int cn
 		case 16:
 			//cnt = (unsigned long long int) malloc(sizeof(unsigned long long int) * N1);
 			result = lfsr_counter_next_state_external(k, cnt);
+			break;
+		case 17:
+			//cnt = (unsigned long long int) malloc(sizeof(unsigned long long int) * N1);
+			result = nfsr_counter_next_state_external(k, cnt);
 			break;
 	    default:
 			result = 0;
