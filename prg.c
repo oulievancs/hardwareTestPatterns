@@ -31,7 +31,7 @@ unsigned long long int next_state(const int ans, const unsigned long long int cn
  * Start main program.
 */
 int main(int argc, char **argv){
-    int k=0, n=0, ans=0, reached, non_linear, high_bit=0, only_cov=0;
+    int k=0, n=0, ans=0, reached, non_linear, high_bit=0, only_cov=0, only_pat=0;
     int there_is, test_b=0, work_b=0, debug_mode=0, no_compare=0, regs=1, halt, halt_d;
     unsigned long long int /***/cnt, cnt_c, /*cnt_idx=0,*/ idx=0, *mSeq1_idx=NULL, *arr1_idx=NULL, tuples, reg=1, M, *goal=NULL, test_cycle=1, reg_idx;
     unsigned long long int start_counter, start_reg = 0, stop, up_limit, N, N1, N2;
@@ -119,13 +119,16 @@ int main(int argc, char **argv){
 			} else if (strcmp (argv[i], "-onlycoverage") == 0) {
 				only_cov = 1;
 				i++;
+			} else if (strcmp (argv[i], "-onlypatterns") == 0) {
+				only_pat = 1;
+				i++;
 			}
 		}
     } else {
         fprintf(stderr, "./prg <-o> <fsim output> <-f> <Do script for Workbench> <-r> <start stage register>\n");
     }
     
-    if (!only_cov) {
+    if (!(only_cov || only_pat)) {
 		printLogo();
 		printf("\n\n\n");
 	}
@@ -256,7 +259,7 @@ int main(int argc, char **argv){
         exit(14);
 	}
     
-    if (!only_cov) {
+    if (!(only_cov || only_pat)) {
 		printf("\n\n\n");
 		printf("***********************ACCUMULATOR STARTED****************************\n");
 		printf("----------------------------------------------------------------------\n");
@@ -410,7 +413,7 @@ int main(int argc, char **argv){
     cpu_time_used = ((double) (end - start)) / CLOCKS_PER_SEC;      //calculate time duration.
     
     if (debug_mode) printf("\n\n**************************%d-TUPLES******************************\n", tuples);
-    if (!only_cov) printf("\n****************************STATISTICS********************************\n");
+    if (!(only_cov || only_pat)) printf("\n****************************STATISTICS********************************\n");
     
     if (ans == 16 || ans == 17) {
 		/*
@@ -493,7 +496,11 @@ int main(int argc, char **argv){
 			i += n;
 		}
 		
-		if (!only_cov) {
+		if (only_cov) {
+			printf("%.6f", tmp_per[0]);
+		} else if (only_pat) {
+			printf("%llu", arr1_idx[0]);
+		} else {
 			printf("\n***\tNumber of sequence patterns              :%llu\n", arr1_idx[0]);
 			printf("***\tTuples                                   :%llu\n", tuples);
 			if (no_compare == 0) {
@@ -504,8 +511,6 @@ int main(int argc, char **argv){
 					printf("***\tBiggest Reached at                       :%llu cycles\n", goal[0]);
 				}
 			}
-		} else {
-			printf("%.6f", tmp_per[0]);
 		}
 	}
 	else if (ans != 9) {
@@ -599,7 +604,11 @@ int main(int argc, char **argv){
 				}
 			}
 			
-			if (!only_cov) {
+			if (only_cov) {
+				printf("%.3f", tmp_per[i_reg]);
+			} else if (only_pat) {
+				printf("%llu", arr1_idx[i_reg]);
+			} else {
 				printf("\n***\tNumber of sequence patterns              :%llu\n", arr1_idx[i_reg]);
 				printf("***\tTuples                                   :%llu\n", tuples);
 				if (no_compare == 0) {
@@ -610,8 +619,6 @@ int main(int argc, char **argv){
 						printf("***\tBiggest Reached at                       :%llu cycles\n", goal[i_reg]);
 					}
 				}
-			} else {
-				printf("%.3f", tmp_per[i_reg]);
 			}
 		}
 	} else {
@@ -709,7 +716,11 @@ int main(int argc, char **argv){
 			}
 		}
 		
-		if (!only_cov) {
+		if (only_cov) {
+			printf("%.3f", tmp_per[i_reg]);
+		} else if (only_pat) {
+			printf("%llu", arr1_idx[0]);
+		} else {
 			printf("\n***\tNumber of sequence patterns              :%llu\n", arr1_idx[0]);
 			printf("***\tTuples                                   :%llu\n", tuples);
 			if (no_compare == 0) {
@@ -720,12 +731,10 @@ int main(int argc, char **argv){
 					printf("***\tBiggest Reached at                       :%llu cycles\n", goal[0]);
 				}
 			}
-		} else {
-			printf("%.3f", tmp_per[i_reg]);
 		}
 	}
 	
-	if (!only_cov) {
+	if (!(only_cov || only_pat)) {
 		printf("***\tNumber of cycles                         :%llu\n", idx-n);
 		
 		
@@ -736,7 +745,7 @@ int main(int argc, char **argv){
 	}
 	
 	if (regs > 1 && ans == 9) {
-		if (!only_cov) printf("*****************************SIMILARITY*******************************\n");
+		if (!(only_cov || only_pat)) printf("*****************************SIMILARITY*******************************\n");
 		for(i_reg=0; i_reg<regs; i_reg++) {
 			for(i_reg_c=0; i_reg_c<regs; i_reg_c++) {
 				
@@ -750,7 +759,7 @@ int main(int argc, char **argv){
 							}
 						}
 					}
-					if (!only_cov) printf("***\tRegister%d[%llu] and Register%d[%llu] has similar %d patterns.\n\n", i_reg, goal[i_reg], i_reg_c, goal[i_reg_c], there_is);
+					if (!(only_cov || only_pat)) printf("***\tRegister%d[%llu] and Register%d[%llu] has similar %d patterns.\n\n", i_reg, goal[i_reg], i_reg_c, goal[i_reg_c], there_is);
 				}
 			}
 		}
@@ -759,7 +768,7 @@ int main(int argc, char **argv){
     
     
     
-    if (!only_cov) printf("**********************************************************************\n");
+    if (!(only_cov || only_pat)) printf("**********************************************************************\n");
     
     if (test_b) fclose(test);
     if (work_b) fclose(workb);
