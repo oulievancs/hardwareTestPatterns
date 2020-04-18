@@ -497,7 +497,7 @@ int main(int argc, char **argv){
 			printf("\n***\tNumber of sequence patterns              :%llu\n", arr1_idx[0]);
 			printf("***\tTuples                                   :%llu\n", tuples);
 			if (no_compare == 0) {
-				printf("***\tn-coverage                               :%f%%\n", tmp_per[0]);
+				printf("***\tn-coverage                               :%.6f%%\n", tmp_per[0]);
 				if (((double) arr1_idx[0]/(pow(pow(2, n), n))*100) >= (double) 100) {
 					printf("***\t100%% Reached at                        :%llu cycles\n", goal[0]);
 				} else {
@@ -505,7 +505,7 @@ int main(int argc, char **argv){
 				}
 			}
 		} else {
-			printf("%.3f", tmp_per[0]);
+			printf("%.6f", tmp_per[0]);
 		}
 	}
 	else if (ans != 9) {
