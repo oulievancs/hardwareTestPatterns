@@ -173,7 +173,7 @@ int main(int argc, char **argv){
     } else if (ans == 6 || ans == 11) {
 		M = (unsigned long long int)(N2 + 2*n);
     } else if (ans == 16) {
-		M = (unsigned long long int) (N2 * n + n);
+		M = (unsigned long long int) (N2 * n + n + (n-1)*n);
 	} else if (ans == 17) {
 		M = (unsigned long long int) (N1 * N2 * n + n);
 	} else {

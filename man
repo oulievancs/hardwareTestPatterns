@@ -6,6 +6,7 @@
 ***** <-r> <start stage register>				start the countr from a specific value
 ***** <-nocompare> 						no comparation between tuples
 ***** <-debug> 							get debug output
+***** <-onlycoverage>					get only coverage to standard output
 ***** <-m> <method>				[1]: Regular Counter + ACC.
 								[2]: Gray Counter + ACC.
 								[3]: Regular Counter with step + ACC.
