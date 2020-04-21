@@ -8,6 +8,7 @@
 ***** <-debug> 							get debug output
 ***** <-onlycoverage>					get only coverage to standard output
 ***** <-onlypatterns>					get only the number of patterns
+***** <-bit> n						get the (k-n) high bit from counter
 ***** <-m> <method>				[1]: Regular Counter + ACC.
 								[2]: Gray Counter + ACC.
 								[3]: Regular Counter with step + ACC.
@@ -17,12 +18,13 @@
 								[7]: NFSR + ACC - internal counter.
 								[8]: NFSR + ACC non-linear.
 								[9]: NFSR + ACC - counter and n shift registers.
-								[10]: NFSR + ACC - internal non-linear extra xor.
+								[10]: NFSR + ACC - internal non-linear mux & extra xor.
 								[11]: LFSR - external counter.
 								[12]: NFSR + ACC - external counter.
-								[13]: NFSR + ACC - external non-linear and extra xor
+								[13]: NFSR + ACC - external non-linear mux & extra xor
 								[14]: NFSR + ACC - internal xor 2 high bit.
 								[15]: NFSR + ACC - external xor 2 high bit.
 								[16]: LFSR - external squares (Giving a dimension).
-								[17]: NFSR + ACC - external (Giving a dimension).
+								[17]: NFSR + ACC - external squares (Giving a dimension).
+								[18]: NFSR + ACC - external squares complements.
 ----------------------------------------------------------------------
