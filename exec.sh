@@ -1,11 +1,11 @@
 #!/bin/bash
 
-for i in {3..14}
+for i in {11..12}
 do
-	#let ii=i-5
-	for j in $(seq 3 1 16)
+	let ii=i-9
+	for j in $(seq 2 1 $ii)
 	do
-		./prg -m 14 -n $j -k $i -onlycoverage
+		./prg -m 18 -bit 9 -n $j -k $i -onlypatterns
 		printf "\t"
 	done
 	printf "\n"

@@ -165,7 +165,7 @@ int main(int argc, char **argv){
         scanf("%d", &ans);
     }
 	
-	if ((ans == 16 || ans == 17 || ans == 18) && n > k) {
+	if ((ans == 16 || ans == 17 || ans == 18) && high_bit != 0 && n > k) {
 		fprintf(stderr, "You can not provide n grater that k.\n");
 	}
 	
@@ -192,7 +192,7 @@ int main(int argc, char **argv){
     }
     
     /*Calculating tuples.*/
-	if (ans == 16 || ans == 17) {
+	if (ans == 16 || ans == 17/* || ans == 18*/) {
 		tuples = (unsigned long long int) ((M - pow(2, n)) + 1);
 	} else {
 		tuples = (unsigned long long int) ((M - n) + 1);
@@ -295,7 +295,7 @@ int main(int argc, char **argv){
         stop = (unsigned long long int) N2;
         up_limit = (unsigned long long int) N2;
     } else if (ans == 18) {
-	start_counter = 3;
+	start_counter = pow(2, k-1) - 1;
 	stop = (unsigned long long int) N3;
 	up_limit = (unsigned long long int) N3;
     } else {
