@@ -27,4 +27,5 @@
 								[16]: LFSR - external squares (Giving a dimension).
 								[17]: NFSR + ACC - external squares (Giving a dimension).
 								[18]: NFSR + ACC - external squares complements.
+								[19]: NFSR + ACC squares - 1-complement + a f-f overflow.
 ----------------------------------------------------------------------
