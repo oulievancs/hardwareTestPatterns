@@ -9,6 +9,7 @@
 ***** <-onlycoverage>					get only coverage to standard output
 ***** <-onlypatterns>					get only the number of patterns
 ***** <-bit> n						get the (k-n) high bit from counter
+***** <-extracycles> n					operate accumulator for by n extra cycles
 ***** <-m> <method>				[1]: Regular Counter + ACC.
 								[2]: Gray Counter + ACC.
 								[3]: Regular Counter with step + ACC.

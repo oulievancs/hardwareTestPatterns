@@ -31,9 +31,9 @@ unsigned long long int next_state(const int ans, const unsigned long long int cn
  * Start main program.
 */
 int main(int argc, char **argv){
-    int k=0, n=0, ans=0, reached, non_linear, high_bit=0, only_cov=0, only_pat=0;
+    int k=0, n=0, ans=0, reached, non_linear, high_bit=0, only_cov=0, only_pat=0, extra_cyc=0;
     int there_is, test_b=0, work_b=0, debug_mode=0, no_compare=0, regs=1, halt, halt_d, prev_over, over=1;
-    unsigned long long int /***/cnt, cnt_c, /*cnt_idx=0,*/ idx=0, *mSeq1_idx=NULL, *arr1_idx=NULL, tuples, reg=1, M, M_tmp, *goal=NULL, test_cycle=1, reg_idx;
+    unsigned long long int /***/cnt, cnt_c, /*cnt_idx=0,*/ idx=0, *mSeq1_idx=NULL, *arr1_idx=NULL, tuples, reg, M, M_tmp, *goal=NULL, test_cycle=1, reg_idx;
     unsigned long long int start_counter, start_reg = 0, stop, up_limit, N, N1, N2, N3;
     unsigned long long int i, j, ii, iii, i_reg, i_reg_c, mSeqs1_idx=0;
     char *reg1=NULL, *reg2=NULL, *mSeqs=NULL, **arrs=NULL, cir_name[50], signal[50], *mSeqs1=NULL;
@@ -77,7 +77,7 @@ int main(int argc, char **argv){
 				}
 			} else if (strcmp(argv[i], "-z") == 0) {
 				if (argv[i+1] != NULL) {
-					reg = (int) atoi(argv[i+1]);
+					start_reg = (int) atoi(argv[i+1]);
 					i += 2;
 				} else {
 					exit(1);
@@ -122,6 +122,13 @@ int main(int argc, char **argv){
 			} else if (strcmp (argv[i], "-onlypatterns") == 0) {
 				only_pat = 1;
 				i++;
+			} else if (strcmp (argv[i], "-extracycles") == 0) {
+				if (argv[i+1] != NULL) {
+					extra_cyc = (int) atoi(argv[i+1]);
+					i += 2;
+				} else {
+					exit(1);
+				}
 			}
 		}
     } else {
@@ -176,21 +183,21 @@ int main(int argc, char **argv){
 	
 	/*Calculate M sequence as Accumulator Cycles number.*/
     if (ans == 5 || ans == 7 || ans == 9 || ans == 10 || ans == 12 || ans == 13 || ans == 14 || ans == 15) {
-        	M = (unsigned long long int) (N1 * N1 + 2*n);
+        	M = (unsigned long long int) (N1 * N1 + 2*n + extra_cyc);
     } else if (ans == 2 || ans == 8) {
-        	M = (unsigned long long int) (N1 * N2 + 2*n);
+        	M = (unsigned long long int) (N1 * N2 + 2*n + extra_cyc);
     } else if (ans == 6 || ans == 11) {
-		M = (unsigned long long int) (N2 + 2*n);
+		M = (unsigned long long int) (N2 + 2*n + extra_cyc);
     } else if (ans == 16) {
-		M = (unsigned long long int) (N2 * n + k * n);
+		M = (unsigned long long int) (N2 * n + k * n + extra_cyc*n);
     } else if (ans == 17) {
-		M = (unsigned long long int) (N1 * N1 * n + k * n);
+		M = (unsigned long long int) (N1 * N1 * n + k * n + extra_cyc*n);
     } else if (ans == 18) {
-		M = (unsigned long long int) (N1 * N3 * n);
+		M = (unsigned long long int) (N1 * N3 * n + extra_cyc*n);
     } else if (ans == 19) {
-		M = (unsigned long long int) (N1 * N1 * n);
+		M = (unsigned long long int) (N1 * N1 * n + extra_cyc*n);
     } else {
-        	M = (unsigned long long int)(N1 * N + n);
+        	M = (unsigned long long int)(N1 * N + n + extra_cyc);
     }
     
     /*Calculating tuples.*/
@@ -288,10 +295,15 @@ int main(int argc, char **argv){
      * 
     */
     start = clock();    //start time.
-    if (ans == 5 || ans == 7 || ans == 9 || ans == 10 || ans == 12 || ans == 13 || ans == 14 || ans == 15 || ans == 17 || ans == 18) {
+    if (ans == 5 || ans == 7 || ans == 9 || ans == 10 || ans == 12 || ans == 13 || ans == 14 || ans == 15 || ans == 17) {
     	start_counter = 1;
         stop = (unsigned long long int) N1;
         up_limit = (unsigned long long int) N1;
+    } else if (ans == 19) {
+	start_counter = 1;
+	start_reg = (unsigned long long int) pow(2, k) - 1;
+	stop = (unsigned long long int) N1;
+	up_limit = (unsigned long long int) N1;
     } else if (ans == 6 || ans == 2 || ans == 8 || ans == 11 || ans == 16) {
     	start_counter = 1;
         stop = (unsigned long long int) N2;
@@ -367,7 +379,7 @@ int main(int argc, char **argv){
 		
 		prev_over = over;
 		if (reg >= pow(2, k)) {
-			reg = (reg % (unsigned long long int) pow(2, k)) + over;
+			reg = (reg % (unsigned long long int) pow(2, k));
 			over = 1;
 		} else {
 			over = 0;
