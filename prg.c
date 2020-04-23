@@ -448,10 +448,13 @@ int main(int argc, char **argv){
 	    } else {
 	    	M_tmp = M;
 	    }
-            if ((ans == 9 || ans == 7 || ans == 10 || ans == 12 || ans == 13 || ans == 14 || ans == 15 || ans == 17 || ans == 19) && non_linear == 1 && cnt == 1) {
+            if ((ans == 9 || ans == 7 || ans == 10 || ans == 12 || ans == 13 || ans == 14 || ans == 15 || ans == 17) && non_linear == 1 && cnt == 1) {
            		cnt = 1;
            		non_linear = 0;
-            } else if (ans == 5 && non_linear == 1 && cnt == 1) {
+            } else if (ans == 19 && non_linear == 1 && cnt_c == (pow(2, k)-1)) {
+			cnt = 1;
+			non_linear = 0;
+	    } else if (ans == 5 && non_linear == 1 && cnt == 1) {
            		cnt = 1;
            		non_linear = 0;
             } else {
