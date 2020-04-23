@@ -31,7 +31,7 @@ unsigned long long int next_state(const int ans, const unsigned long long int cn
  * Start main program.
 */
 int main(int argc, char **argv){
-    int k=0, n=0, ans=0, reached, non_linear, high_bit=0, only_cov=0, only_pat=0, extra_cyc=0;
+    int k=0, n=0, ans=0, reached, non_linear, high_bit=0, only_cov=0, only_pat=0, extra_cyc=0, regout_m=0;
     int there_is, test_b=0, work_b=0, debug_mode=0, no_compare=0, regs=1, halt, halt_d, prev_over, over=1;
     unsigned long long int /***/cnt, cnt_c, /*cnt_idx=0,*/ idx=0, *mSeq1_idx=NULL, *arr1_idx=NULL, tuples, reg, M, M_tmp, *goal=NULL, test_cycle=1, reg_idx;
     unsigned long long int start_counter, start_reg = 0, stop, up_limit, N, N1, N2, N3;
@@ -41,7 +41,7 @@ int main(int argc, char **argv){
     double cpu_time_used, min_cycl_per, *tmp_per=NULL;
     
     /*For output file Stream.*/
-    FILE *test, *workb;
+    FILE *test, *workb, *regOut;
 	
 	/********************************USER INPUT*********************************************/
 	/***************************************************************************************/
@@ -125,6 +125,19 @@ int main(int argc, char **argv){
 			} else if (strcmp (argv[i], "-extracycles") == 0) {
 				if (argv[i+1] != NULL) {
 					extra_cyc = (int) atoi(argv[i+1]);
+					i += 2;
+				} else {
+					exit(1);
+				}
+			} else if (strcmp (argv[i], "-getregister") == 0) {
+				if (argv[i+1] != NULL) {
+					regout_m = 1;
+					regOut = fopen(argv[i+1], "w");
+
+					if (regOut == NULL) {
+                                                fprintf(stderr, "There was a problem on file opening.\n");
+                                                exit(14);
+                                        }
 					i += 2;
 				} else {
 					exit(1);
@@ -403,6 +416,11 @@ int main(int argc, char **argv){
                 if (ans != 16 && ans != 17 && ans != 18 && ans != 19) printf(" -> Out Bit: ");
 		else if (ans == 19) printf(" -> D: ");
             }
+	
+	    if (regout_m) {
+			printBinary(reg, k, regOut);
+			fprintf(regOut, "\n");
+	    }
             
             binaryToStr(reg, k, reg1);
             for (i_reg=0; i_reg<regs; i_reg++) {
@@ -830,6 +848,7 @@ int main(int argc, char **argv){
     
     if (test_b) fclose(test);
     if (work_b) fclose(workb);
+    if (regout_m) fclose(regOut);
     
     /*Free memory.*/
     /*free(cnt);*/
