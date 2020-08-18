@@ -145,7 +145,7 @@ int main(int argc, char **argv){
 			}
 		}
     } else {
-        fprintf(stderr, "./prg <-o> <fsim output> <-f> <Do script for Workbench> <-r> <start stage register>\n");
+        fprintf(stderr, "./prg <-o> <fsim output> <-f> <Do script for Workbench> <-r> <start stage register> <-extracycles> <number> <-getregister> <filename regiter> <-onlypatterns> <-onlycoverage> <-bit> <shift's driven bit> <-m> <menu option> <-n> <n value> <-k> <k value> <-no_compare> <-debug> <-z> <register's first value>\n");
     }
     
     if (!(only_cov || only_pat)) {
@@ -179,7 +179,7 @@ int main(int argc, char **argv){
     while (!(ans == 1 || ans == 2 || ans == 3 || ans == 4 || ans == 5 || ans == 6 || ans == 7 || ans == 8 || ans == 9 || ans == 10 || ans == 11 || ans == 12 || ans == 13 || ans == 14 || ans == 15 || ans == 16 || ans == 17 || ans == 18 || ans == 19)) {
 		printf("=====MENU=====\n");
 		printf("Select a counter type:\n");
-		printf("[1]: Regular Counter + ACC.\n[2]: Gray Counter + ACC.\n[3]: Regular Counter with step + ACC.\n[4]: Add after N cycles (N-1) counter + ACC.\n[5]: 1,1,....,N-1 sequence counter + ACC.\n[6]: LFSR - internal counter.\n[7]: NFSR + ACC - internal counter.\n[8]: NFSR + ACC non-linear.\n[9]: NFSR + ACC counter and n shift registers.\n[10]: NFSR + ACC - internal non-linear extra xor.\n[11]: LFSR - external counter.\n[12]: NFSR + ACC - external counter.\n[13]: NFSR + ACC - external non-linear and extra xor.\n[14]: NFSR + ACC - internal xor 2 high bit.\n[15]: NFSR + ACC - external xor 2 high bit.\n[16]: LFSR - external squares (Giving a dimension).\n[17]: NFSR + ACC - external (Giving a dimension).\n[18]: NFSR + ACC squares - 1-complement adder.[19]: NFSR + ACC squares - 1-complement + a f-f overflow.\n\n");
+		printf("[1]: Regular Counter + ACC.\n[2]: Gray Counter + ACC.\n[3]: Regular Counter with step + ACC.\n[4]: Add after N cycles (N-1) counter + ACC.\n[5]: 1,1,....,N-1 sequence counter + ACC.\n[6]: LFSR - internal counter.\n[7]: NFSR + ACC - internal counter.\n[8]: NFSR + ACC non-linear.\n[9]: NFSR + ACC counter and n shift registers.\n[10]: NFSR + ACC - internal non-linear extra xor drives between 2 highest bits.\n[11]: LFSR - external counter.\n[12]: NFSR + ACC - external counter.\n[13]: NFSR + ACC - external non-linear and extra xor drives between 2 highest bits.\n[14]: NFSR + ACC - internal xor 2 high bit.\n[15]: NFSR + ACC - external xor 2 high bit.\n[16]: LFSR - external squares (Giving a dimension).\n[17]: NFSR + ACC - external (Giving a dimension).\n[18]: NFSR + ACC squares - 1-complement adder.\n[19]: NFSR + ACC squares - 1-complement + a f-f overflow.\n\n");
 		
         printf("--Give option:\t");
         scanf("%d", &ans);
@@ -425,15 +425,16 @@ int main(int argc, char **argv){
             binaryToStr(reg, k, reg1);
             for (i_reg=0; i_reg<regs; i_reg++) {
                 //if (M > idx-1) {
+				//LFSR
 				if (ans == 6 || ans == 11) {
 					mSeqs[i_reg * M + mSeq1_idx[i_reg]] = reg1[i_reg];
 					if (debug_mode) printf("%c", mSeqs[i_reg * M + mSeq1_idx[i_reg]]);
 					mSeq1_idx[i_reg]++;
-				} else if (ans == 10 || ans == 13) {
+				} else if (ans == 10 || ans == 13) {	//NFSR non-linear and extra Xor (Oulis)
 					mSeqs[i_reg * M + mSeq1_idx[i_reg]] = reg1[k-1-i_reg-((~((reg>>(1)&0x1) ^ reg&0x1)) & 0x1)];
 					if (debug_mode) printf("%c", mSeqs[i_reg * M + mSeq1_idx[i_reg]]);
 					mSeq1_idx[i_reg]++;
-				} else if (ans == 14 || ans == 15) {
+				} else if (ans == 14 || ans == 15) {	//NFSR non-linear and Xor between two highest bits
 					if (((((reg >> (k-1)) & 0x1) ^ ((reg >> (k-2)) & 0x1)) & 0x1)) {
 							mSeqs[i_reg * M + mSeq1_idx[i_reg]] = '1';
 					} else {
@@ -441,14 +442,14 @@ int main(int argc, char **argv){
 					}
 					if (debug_mode) printf("%c", mSeqs[i_reg * M + mSeq1_idx[i_reg]]);
 					mSeq1_idx[i_reg]++;
-				} else if (ans == 16 || ans == 17 || ans == 18 || ans == 19) {
+				} else if (ans == 16 || ans == 17 || ans == 18 || ans == 19) {	//Squares
 					for (ii=0; ii<n; ii++) {
 						mSeqs[i_reg * M + mSeq1_idx[i_reg]] = reg1[k-1-high_bit-ii];
 						mSeq1_idx[i_reg] ++;
 					}
 					
 					if (debug_mode && ans == 19) printf("%d", over);
-				} else {
+				} else {	//NFSR non-linear (high_bit)s bit
 					mSeqs[i_reg * M + mSeq1_idx[i_reg]] = reg1[k-1-i_reg-high_bit];
 					if (debug_mode) printf("%c", mSeqs[i_reg * M + mSeq1_idx[i_reg]]);
 					mSeq1_idx[i_reg]++;
