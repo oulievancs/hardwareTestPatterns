@@ -382,103 +382,103 @@ int main(int argc, char **argv){
             if (ans == 6 || ans == 11 || ans == 16) {
             	reg = cnt;
             } else if (ans == 18) {
-		reg = ADD(reg, cnt);
-		if (reg >= pow(2, k)) {
-			reg = (reg % (unsigned long long int) pow(2, k)) + 1;
-		}
-	    }  else if (ans == 19) {
-		reg = ADD(reg, cnt);
-		reg += (unsigned long long int) over;
-		
-		prev_over = over;
-		if (reg >= pow(2, k)) {
-			reg = (reg % (unsigned long long int) pow(2, k));
-			over = 1;
-		} else {
-			over = 0;
-		}
-	    } else {
-           	reg = ADD(reg, cnt);
-            }
-            
-            if (debug_mode) {
-                if (ans != 16 && ans != 17 && ans != 18 && ans != 19) printf("Round: %llu, cnt[%llu] = ", idx-n, cnt_c);
-		else printf("Round: %llu, cnt[%llu] = ", idx, cnt_c);
-		
-                printBinary(cnt, k, stdout);
-                printf(", ");
-		
-		if (ans == 19) printf(" D = %d, ", prev_over);
-		
-		printf("Reg = ");
-                printBinary(reg, k, stdout);
-		
-                if (ans != 16 && ans != 17 && ans != 18 && ans != 19) printf(" -> Out Bit: ");
-		else if (ans == 19) printf(" -> D: ");
-            }
-	
-	    if (regout_m) {
-			printBinary(reg, k, regOut);
-			fprintf(regOut, "\n");
-	    }
-            
-            binaryToStr(reg, k, reg1);
-            for (i_reg=0; i_reg<regs; i_reg++) {
-                //if (M > idx-1) {
-				//LFSR
-				if (ans == 6 || ans == 11) {
-					mSeqs[i_reg * M + mSeq1_idx[i_reg]] = reg1[i_reg];
-					if (debug_mode) printf("%c", mSeqs[i_reg * M + mSeq1_idx[i_reg]]);
-					mSeq1_idx[i_reg]++;
-				} else if (ans == 10 || ans == 13) {	//NFSR non-linear and extra Xor (Oulis)
-					mSeqs[i_reg * M + mSeq1_idx[i_reg]] = reg1[k-1-i_reg-((~((reg>>(1)&0x1) ^ reg&0x1)) & 0x1)];
-					if (debug_mode) printf("%c", mSeqs[i_reg * M + mSeq1_idx[i_reg]]);
-					mSeq1_idx[i_reg]++;
-				} else if (ans == 14 || ans == 15) {	//NFSR non-linear and Xor between two highest bits
-					if (((((reg >> (k-1)) & 0x1) ^ ((reg >> (k-2)) & 0x1)) & 0x1)) {
-							mSeqs[i_reg * M + mSeq1_idx[i_reg]] = '1';
-					} else {
-							mSeqs[i_reg * M + mSeq1_idx[i_reg]] = '0';
-					}
-					if (debug_mode) printf("%c", mSeqs[i_reg * M + mSeq1_idx[i_reg]]);
-					mSeq1_idx[i_reg]++;
-				} else if (ans == 16 || ans == 17 || ans == 18 || ans == 19) {	//Squares
-					for (ii=0; ii<n; ii++) {
-						mSeqs[i_reg * M + mSeq1_idx[i_reg]] = reg1[k-1-high_bit-ii];
-						mSeq1_idx[i_reg] ++;
-					}
-					
-					if (debug_mode && ans == 19) printf("%d", over);
-				} else {	//NFSR non-linear (high_bit)s bit
-					mSeqs[i_reg * M + mSeq1_idx[i_reg]] = reg1[k-1-i_reg-high_bit];
-					if (debug_mode) printf("%c", mSeqs[i_reg * M + mSeq1_idx[i_reg]]);
-					mSeq1_idx[i_reg]++;
+				reg = ADD(reg, cnt);
+				if (reg >= pow(2, k)) {
+					reg = (reg % (unsigned long long int) pow(2, k)) + 1;
 				}
-		    
-                //}
-            }
-	    if (debug_mode) printf("\n");
-            
-            
-            cnt_c/*cnt_idx*/ = (++cnt_c/*cnt_idx*/) % up_limit;
-            /*Go to next state - At each counter type.*/
-	    if (ans == 16 || ans == 17 || ans == 18 || ans == 19) {
-		M_tmp = M/n;
-	    } else {
-	    	M_tmp = M;
-	    }
-            if ((ans == 9 || ans == 7 || ans == 10 || ans == 12 || ans == 13 || ans == 14 || ans == 15 || ans == 17) && non_linear == 1 && cnt == 1) {
-           		cnt = 1;
-           		non_linear = 0;
-            } else if (ans == 19 && non_linear == 1 && cnt_c == (pow(2, k)-1)) {
-			cnt = 1;
-			non_linear = 0;
-	    } else if (ans == 5 && non_linear == 1 && cnt == 1) {
-           		cnt = 1;
-           		non_linear = 0;
-            } else {
-            	cnt = next_state(ans, cnt, k);
-            }
+			}  else if (ans == 19) {
+				reg = ADD(reg, cnt);
+				reg += (unsigned long long int) over;
+				
+				prev_over = over;
+				if (reg >= pow(2, k)) {
+					reg = (reg % (unsigned long long int) pow(2, k));
+					over = 1;
+				} else {
+					over = 0;
+				}
+			} else {
+			reg = ADD(reg, cnt);
+			}
+				
+			if (debug_mode) {
+				if (ans != 16 && ans != 17 && ans != 18 && ans != 19) printf("Round: %llu, cnt[%llu] = ", idx-n, cnt_c);
+				else printf("Round: %llu, cnt[%llu] = ", idx, cnt_c);
+		
+				printBinary(cnt, k, stdout);
+				printf(", ");
+		
+				if (ans == 19) printf(" D = %d, ", prev_over);
+				
+				printf("Reg = ");
+				printBinary(reg, k, stdout);
+				
+				if (ans != 16 && ans != 17 && ans != 18 && ans != 19) printf(" -> Out Bit: ");
+				else if (ans == 19) printf(" -> D: ");
+			}
+		
+			if (regout_m) {
+				printBinary(reg, k, regOut);
+				fprintf(regOut, "\n");
+			}
+				
+				binaryToStr(reg, k, reg1);
+				for (i_reg=0; i_reg<regs; i_reg++) {
+					//if (M > idx-1) {
+					//LFSR
+					if (ans == 6 || ans == 11) {
+						mSeqs[i_reg * M + mSeq1_idx[i_reg]] = reg1[i_reg];
+						if (debug_mode) printf("%c", mSeqs[i_reg * M + mSeq1_idx[i_reg]]);
+						mSeq1_idx[i_reg]++;
+					} else if (ans == 10 || ans == 13) {	//NFSR non-linear and extra Xor (Oulis)
+						mSeqs[i_reg * M + mSeq1_idx[i_reg]] = reg1[k-1-i_reg-((~((reg>>(1)&0x1) ^ reg&0x1)) & 0x1)];
+						if (debug_mode) printf("%c", mSeqs[i_reg * M + mSeq1_idx[i_reg]]);
+						mSeq1_idx[i_reg]++;
+					} else if (ans == 14 || ans == 15) {	//NFSR non-linear and Xor between two highest bits
+						if (((((reg >> (k-1)) & 0x1) ^ ((reg >> (k-2)) & 0x1)) & 0x1)) {
+								mSeqs[i_reg * M + mSeq1_idx[i_reg]] = '1';
+						} else {
+								mSeqs[i_reg * M + mSeq1_idx[i_reg]] = '0';
+						}
+						if (debug_mode) printf("%c", mSeqs[i_reg * M + mSeq1_idx[i_reg]]);
+						mSeq1_idx[i_reg]++;
+					} else if (ans == 16 || ans == 17 || ans == 18 || ans == 19) {	//Squares
+						for (ii=0; ii<n; ii++) {
+							mSeqs[i_reg * M + mSeq1_idx[i_reg]] = reg1[k-1-high_bit-ii];
+							mSeq1_idx[i_reg] ++;
+						}
+						
+						if (debug_mode && ans == 19) printf(" Carry: %d", over);
+					} else {	//NFSR non-linear (high_bit)s bit
+						mSeqs[i_reg * M + mSeq1_idx[i_reg]] = reg1[k-1-i_reg-high_bit];
+						if (debug_mode) printf("%c", mSeqs[i_reg * M + mSeq1_idx[i_reg]]);
+						mSeq1_idx[i_reg]++;
+					}
+				
+					//}
+				}
+			if (debug_mode) printf("\n");
+				
+				
+				cnt_c/*cnt_idx*/ = (++cnt_c/*cnt_idx*/) % up_limit;
+				/*Go to next state - At each counter type.*/
+			if (ans == 16 || ans == 17 || ans == 18 || ans == 19) {
+				M_tmp = M/n;
+			} else {
+				M_tmp = M;
+			}
+			if ((ans == 9 || ans == 7 || ans == 10 || ans == 12 || ans == 13 || ans == 14 || ans == 15 || ans == 17) && non_linear == 1 && 	cnt == 1) {
+				cnt = 1;
+				non_linear = 0;
+			} else if (ans == 19 && non_linear == 1 && cnt_c == (pow(2, k)-1)) {
+				cnt = 1;
+				non_linear = 0;
+			} else if (ans == 5 && non_linear == 1 && cnt == 1) {
+				cnt = 1;
+				non_linear = 0;
+			} else {
+				cnt = next_state(ans, cnt, k);
+			}
         } while (!(cnt_c/*ctn_idx*/ == stop%up_limit || idx == M_tmp));
         
         if (ans == 3) {
@@ -949,9 +949,9 @@ unsigned long long int next_state(const int ans, const unsigned long long int cn
 			result = nfsr_counter_next_state_external(k, cnt);
 			break;
 	    case 19:
-                        //cnt = (unsigned long long int) malloc(sizeof(unsigned long long int) * N3);
-                        result = nfsr_counter_next_state_external(k, cnt);
-                        break;
+			//cnt = (unsigned long long int) malloc(sizeof(unsigned long long int) * N3);
+			result = nfsr_counter_next_state_external(k, cnt);
+			break;
 	    default:
 			result = 0;
 			break;
