@@ -214,7 +214,7 @@ int main(int argc, char **argv){
     }
     
     /*Calculating tuples.*/
-	if (ans == 16 || ans == 17/* || ans == 18*//* || ans == 19*/) {
+	if (ans == 16 || ans == 17 || ans == 18 || ans == 19) {
 		tuples = (unsigned long long int) ((M - pow(2, n)) + 1);
 	} else {
 		tuples = (unsigned long long int) ((M - n) + 1);
