@@ -676,7 +676,7 @@ int main(int argc, char **argv){
 						min_cycl_per = tmp_per[i_reg];
 					}
 					else if (tmp_per[i_reg] == min_cycl_per && tmp_per[i_reg] != (double) 100) {
-						//goal[i_reg]++;
+						goal[i_reg]++;
 					}
 				}
 			}
