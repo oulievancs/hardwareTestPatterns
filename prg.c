@@ -21,6 +21,8 @@
 #include "lfsr.h"
 #include "nfsr.h"
 
+typedef enum {false, true} bool;
+
 /*
  * Define Functions.
 */
@@ -194,13 +196,20 @@ int main(int argc, char **argv){
 		exit(20);
 	}
 	
+	if (ans == 9) {
+        do {
+            printf("--Give the number of registered bit yout want to check:\t");
+            scanf("%d", &regs);
+        } while (! (regs <= k));
+  }
+	
 	/*Calculate M sequence as Accumulator Cycles number.*/
     if (ans == 5 || ans == 7 || ans == 9 || ans == 10 || ans == 12 || ans == 13 || ans == 14 || ans == 15) {
-        	M = (unsigned long long int) (N1 * N1 + 2*n + extra_cyc);
+        	M = (unsigned long long int) (N1 * N1 + /*2**/n + extra_cyc);
     } else if (ans == 2 || ans == 8) {
-        	M = (unsigned long long int) (N1 * N2 + 2*n + extra_cyc);
+        	M = (unsigned long long int) (N1 * N2 + /*2**/n + extra_cyc);
     } else if (ans == 6 || ans == 11) {
-		M = (unsigned long long int) (N2 + 2*n + extra_cyc);
+		M = (unsigned long long int) (N2 + /*2**/n + extra_cyc);
     } else if (ans == 16) {
 		M = (unsigned long long int) (N2 * n + k * n + extra_cyc*n);
     } else if (ans == 17) {
@@ -217,14 +226,10 @@ int main(int argc, char **argv){
 	if (ans == 16 || ans == 17 || ans == 18 || ans == 19) {
 		tuples = (unsigned long long int) ((M - pow(2, n)) + 1);
 	} else {
-		tuples = (unsigned long long int) ((M - n) + 1);
+		tuples = (unsigned long long int) ((M /*- n*/) + 1);
 	}
     
     if (ans == 9) {
-        do {
-            printf("--Give the number of registered bit yout want to check:\t");
-            scanf("%d", &regs);
-        } while (! (regs <= k));
         halt = ((int) (n/regs));
         halt_d = ((int) (n % regs));
         
@@ -608,21 +613,23 @@ int main(int argc, char **argv){
 			min_cycl_per = (double) 0;
 			goal[i_reg] = 0;
 			tmp_per[i_reg] = 0;
+			bool not_on_limit;
 			
 			for(i=0; i<tuples && (reached == 0 || debug_mode == 1); i++) {
+				not_on_limit = ((tuples-1) - i) >= n;
 				/*
 				 * Check four multipled patterns.
 				 * If current parr1ern is already counted, throw it away.
 				*/
 				there_is = 0;
-				for (ii=0; ii<arr1_idx[i_reg] && there_is == 0 && no_compare == 0; ii++) {
+				for (ii=0; ii<arr1_idx[i_reg] && there_is == 0 && no_compare == 0 && not_on_limit; ii++) {
 					if (strncmp(arrs[i_reg * M + ii], &mSeqs[i_reg * M + i], n * sizeof(char)) == 0) {
 						there_is = 1;
 					}
 				}
 				
 				
-				for (i_reg_c=0; i_reg_c<regs && i_reg_c < i_reg && there_is == 0 && no_compare == 0; i_reg_c++) {
+				for (i_reg_c=0; i_reg_c<regs && i_reg_c < i_reg && there_is == 0 && no_compare == 0 && not_on_limit; i_reg_c++) {
 					for (ii=0; ii<arr1_idx[i_reg_c] && there_is == 0; ii++) {
 						if (strncmp(arrs[i_reg_c * M + ii], &mSeqs[i_reg * M + i], n * sizeof(char)) == 0) {
 							there_is = 1;
@@ -641,7 +648,7 @@ int main(int argc, char **argv){
 				*/
 				
 				if (no_compare == 0) {
-					if (there_is == 0 || arr1_idx[i_reg] == 0) {
+					if ((there_is == 0 || arr1_idx[i_reg] == 0) && not_on_limit) {
 						arrs[i_reg * M + arr1_idx[i_reg]] = &mSeqs[i_reg * M + i];
 						arr1_idx[i_reg]++;
 						
@@ -699,6 +706,8 @@ int main(int argc, char **argv){
 			}
 		}
 	} else {
+		int min_cycl_per_reg;
+		
 		for(i_reg=0; i_reg<regs; i_reg++) {
 			arr1_idx[i_reg] = 0;
 			goal[i_reg] = 0;
@@ -715,6 +724,7 @@ int main(int argc, char **argv){
 		}
 		reached = 0;
 		min_cycl_per = (double) 0;
+		bool not_on_limit;
 		
 		for(i=0; i<tuples; i++) {
 			reg_idx = 0;
@@ -735,20 +745,22 @@ int main(int argc, char **argv){
 				}
 			}
 			
+			not_on_limit = ((tuples-1) - i) >= n+halt;
+			
 			there_is = 0;
-			for (ii=0; ii<mSeqs1_idx && there_is == 0 && no_compare == 0; ii+=n) {
+			for (ii=0; ii<mSeqs1_idx && there_is == 0 && no_compare == 0 && not_on_limit; ii+=n) {
 				if (strncmp(&mSeqs1[ii], reg2, n * sizeof(char)) == 0) {
 					there_is = 1;
 				}
 			}
 			
 			
-			if ((no_compare == 0 && there_is == 0) || no_compare == 1) {
+			if (((no_compare == 0 && there_is == 0) || no_compare == 1) && not_on_limit) {
 				if (test_b) fprintf(test, "\n%llu:", test_cycle++);
 				if (work_b) fprintf(workb, "force -freeze %s ", signal);
 			}
 			
-			for(i_reg=0; i_reg<regs; i_reg++) {
+			for(i_reg=0; i_reg<regs && not_on_limit; i_reg++) {
 				if ((no_compare == 0 && there_is == 0 ) || no_compare == 1) {
 					if (i_reg == 0) {
 						for(j=halt+halt_d; j -- > 0;) {
@@ -766,7 +778,7 @@ int main(int argc, char **argv){
 						}
 					}
 				}
-				if (no_compare == 0 && there_is != 0) {
+				if (no_compare == 0 || arr1_idx[i_reg] == 0) {
 					arr1_idx[i_reg]++;
 					tmp_per[i_reg] = (double) arr1_idx[i_reg]/(pow(2, n))* (double) 100;
 				}
@@ -782,6 +794,7 @@ int main(int argc, char **argv){
 					if (tmp_per[i_reg] > min_cycl_per) {
 						goal[i_reg]++;
 						min_cycl_per = tmp_per[i_reg];
+						min_cycl_per_reg = i_reg;
 					}
 					else if (tmp_per[i_reg] == min_cycl_per && tmp_per[i_reg] != (double) 100) {
 						//goal[i_reg]++;
@@ -801,8 +814,8 @@ int main(int argc, char **argv){
 			printf("\n***\tNumber of sequence patterns              :%llu\n", arr1_idx[0]);
 			printf("***\tTuples                                   :%llu\n", tuples);
 			if (no_compare == 0) {
-				printf("***\tn-coverage                               :(%d) %f%%\n", min_cycl_per);
-				if (((double) arr1_idx[0]/(pow(2, n))*100) >= (double) 100) {
+				printf("***\tn-coverage                               :(%d) %f%%\n", min_cycl_per_reg, min_cycl_per);
+				if (((double) arr1_idx[0]/(pow(2, halt))*100) >= (double) 100) {
 					printf("***\t100%% Reached at                         :%llu cycles\n", goal[0]);
 				} else {
 					printf("***\tBiggest Reached at                       :%llu cycles\n", goal[0]);
