@@ -137,9 +137,9 @@ int main(int argc, char **argv){
 					regOut = fopen(argv[i+1], "w");
 
 					if (regOut == NULL) {
-                                                fprintf(stderr, "There was a problem on file opening.\n");
-                                                exit(14);
-                                        }
+						fprintf(stderr, "There was a problem on file opening.\n");
+						exit(14);
+					}
 					i += 2;
 				} else {
 					exit(1);
@@ -205,9 +205,9 @@ int main(int argc, char **argv){
 	
 	/*Calculate M sequence as Accumulator Cycles number.*/
     if (ans == 5 || ans == 7 || ans == 9 || ans == 10 || ans == 12 || ans == 13 || ans == 14 || ans == 15) {
-        	M = (unsigned long long int) (N1 * N1 + /*2**/n + extra_cyc);
+        M = (unsigned long long int) (N1 * N1 + /*2**/n + extra_cyc);
     } else if (ans == 2 || ans == 8) {
-        	M = (unsigned long long int) (N1 * N2 + /*2**/n + extra_cyc);
+        M = (unsigned long long int) (N1 * N2 + /*2**/n + extra_cyc);
     } else if (ans == 6 || ans == 11) {
 		M = (unsigned long long int) (N2 + /*2**/n + extra_cyc);
     } else if (ans == 16) {
@@ -219,7 +219,7 @@ int main(int argc, char **argv){
     } else if (ans == 19) {
 		M = (unsigned long long int) (N1 * N1 * n + extra_cyc*n);
     } else {
-        	M = (unsigned long long int)(N1 * N + n + extra_cyc);
+        M = (unsigned long long int)(N1 * N + n + extra_cyc);
     }
     
     /*Calculating tuples.*/
@@ -465,8 +465,8 @@ int main(int argc, char **argv){
 			if (debug_mode) printf("\n");
 				
 				
-				cnt_c/*cnt_idx*/ = (++cnt_c/*cnt_idx*/) % up_limit;
-				/*Go to next state - At each counter type.*/
+			cnt_c/*cnt_idx*/ = (++cnt_c/*cnt_idx*/) % up_limit;
+			/*Go to next state - At each counter type.*/
 			if (ans == 16 || ans == 17 || ans == 18 || ans == 19) {
 				M_tmp = M/n;
 			} else {
@@ -615,7 +615,7 @@ int main(int argc, char **argv){
 			tmp_per[i_reg] = 0;
 			bool not_on_limit;
 			
-			for(i=0; i<tuples && (reached == 0 || debug_mode == 1); i++) {
+			for(i=0; i < tuples && (reached == 0 || debug_mode == 1); i++) {
 				not_on_limit = ((tuples-1) - i) >= n;
 				/*
 				 * Check four multipled patterns.
@@ -647,8 +647,8 @@ int main(int argc, char **argv){
 				 *   then we keep it at "arrs[i_reg]" array.
 				*/
 				
-				if (no_compare == 0) {
-					if ((there_is == 0 || arr1_idx[i_reg] == 0) && not_on_limit) {
+				if (no_compare == 0 && not_on_limit) {
+					if (there_is == 0 || arr1_idx[i_reg] == 0) {
 						arrs[i_reg * M + arr1_idx[i_reg]] = &mSeqs[i_reg * M + i];
 						arr1_idx[i_reg]++;
 						
@@ -662,7 +662,7 @@ int main(int argc, char **argv){
 						}
 						if (work_b) fprintf(workb, " 0\nrun\n");
 					}
-				} else {
+				} else if (not_on_limit) {
 				
 					if (test_b) fprintf(test, "\n%llu:", test_cycle++);
 					if (work_b) fprintf(workb, "force -freeze %s ", signal);
@@ -726,7 +726,7 @@ int main(int argc, char **argv){
 		min_cycl_per = (double) 0;
 		bool not_on_limit;
 		
-		for(i=0; i<tuples; i++) {
+		for(i=0; i < tuples; i++) {
 			reg_idx = 0;
 			
 			for(i_reg=0; i_reg<regs && no_compare == 0; i_reg++) {
