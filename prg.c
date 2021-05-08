@@ -33,7 +33,7 @@ unsigned long long int next_state(const int ans, const unsigned long long int cn
  * Start main program.
 */
 int main(int argc, char **argv){
-    int k=0, n=0, ans=0, reached, non_linear, high_bit=0, only_cov=0, only_pat=0, extra_cyc=0, regout_m=0;
+    int k=0, n=0, ans=0, reached, non_linear, high_bit=0, only_cov=0, only_pat=0, extra_cyc=0, regout_m=0, csv_out=0;
     int there_is, test_b=0, work_b=0, debug_mode=0, no_compare=0, regs=1, halt, halt_d, prev_over, over=1;
     unsigned long long int /***/cnt, cnt_c, /*cnt_idx=0,*/ idx=0, *mSeq1_idx=NULL, *arr1_idx=NULL, tuples, reg, M, M_tmp, *goal=NULL, test_cycle=1, reg_idx;
     unsigned long long int start_counter, start_reg = 0, stop, up_limit, N, N1, N2, N3;
@@ -89,6 +89,9 @@ int main(int argc, char **argv){
 					i ++;
 			} else if (strcmp(argv[i], "-nocompare") == 0) {
 				no_compare = 1;
+				i ++;
+			} else if (strcmp(argv[i], "-csv") == 0) {
+				csv_out = 1;
 				i ++;
 			} else if (strcmp(argv[i], "-k") == 0) {
 				if (argv[i+1] != NULL) {
@@ -548,24 +551,36 @@ int main(int argc, char **argv){
 					
 					tmp_per[0] = (double) arr1_idx[0]/(pow(2, n*n))* (double) 100;
 					
-					if (test_b) fprintf(test, "\n%llu:", test_cycle++);
+					if (test_b) fprintf(test, "\n%llu", test_cycle++);
+						
+					if (test_b && csv_out == 1) fprintf(test, ",=\"");
+					else if (test_b) fprintf(test, ":");
+						
 					if (work_b) fprintf(workb, "force -freeze %s ", signal);
 					for(j=pow(n, 2); j-- > 0;) {
 						if (test_b) fprintf(test, "%c", mSeqs[0 * M + (i+j)]);
 						if (work_b) fprintf(workb, "%c", mSeqs[0 * M + (i+j)]);
 					}
+					
 					if (work_b) fprintf(workb, " 0\nrun\n");
 				}
 			} else {
 			
-				if (test_b) fprintf(test, "\n%llu:", test_cycle++);
+				if (test_b) fprintf(test, "\n%llu", test_cycle++);
+						
+				if (test_b && csv_out == 1) fprintf(test, ",=\"");
+				else if (test_b) fprintf(test, ":");
+				
 				if (work_b) fprintf(workb, "force -freeze %s ", signal);
 				for(j=pow(n, 2); j-- > 0;) {
 					if (test_b) fprintf(test, "%c", mSeqs[0 * M + (i+j)]);
 					if (work_b) fprintf(workb, "%c", mSeqs[0 * M + (i+j)]);
 				}
+				
 				if (work_b) fprintf(workb, " 0\nrun\n");
 			}
+				
+			if (test_b && csv_out == 1) fprintf(test, "\",");
 			
 			if (no_compare == 0) {
 				if (tmp_per[0] == (double) 100) {
@@ -654,24 +669,36 @@ int main(int argc, char **argv){
 						
 						tmp_per[i_reg] = (double) arr1_idx[i_reg]/(pow(2, n))* (double) 100;
 						
-						if (test_b) fprintf(test, "\n%llu:", test_cycle++);
+						if (test_b) fprintf(test, "\n%llu", test_cycle++);
+						
+						if (test_b && csv_out == 1) fprintf(test, ",=\"");
+						else if (test_b) fprintf(test, ":");
+						
 						if (work_b) fprintf(workb, "force -freeze %s ", signal);
 						for(j=n; j-- > 0;) {
 							if (test_b) fprintf(test, "%c", mSeqs[i_reg * M + (i+j)]);
 							if (work_b) fprintf(workb, "%c", mSeqs[i_reg * M + (i+j)]);
 						}
+						
 						if (work_b) fprintf(workb, " 0\nrun\n");
 					}
 				} else if (not_on_limit) {
 				
-					if (test_b) fprintf(test, "\n%llu:", test_cycle++);
+					if (test_b) fprintf(test, "\n%llu", test_cycle++);
+						
+					if (test_b && csv_out == 1) fprintf(test, ",=\"");
+					else if (test_b) fprintf(test, ":");
+						
 					if (work_b) fprintf(workb, "force -freeze %s ", signal);
 					for(j=n; j-- > 0;) {
 						if (test_b) fprintf(test, "%c", mSeqs[i_reg * M + (i+j)]);
 						if (work_b) fprintf(workb, "%c", mSeqs[i_reg * M + (i+j)]);
 					}
+					
 					if (work_b) fprintf(workb, " 0\nrun\n");
 				}
+					
+				if (test_b && csv_out == 1 && not_on_limit) fprintf(test, "\",");
 				
 				if (no_compare == 0) {
 					if (tmp_per[i_reg] == (double) 100) {
@@ -756,7 +783,11 @@ int main(int argc, char **argv){
 			
 			
 			if (((no_compare == 0 && there_is == 0) || no_compare == 1) && not_on_limit) {
-				if (test_b) fprintf(test, "\n%llu:", test_cycle++);
+				if (test_b) fprintf(test, "\n%llu", test_cycle++);
+						
+				if (test_b && csv_out == 1) fprintf(test, ",=\"");
+				else if (test_b) fprintf(test, ":");
+				
 				if (work_b) fprintf(workb, "force -freeze %s ", signal);
 			}
 			
@@ -785,6 +816,8 @@ int main(int argc, char **argv){
 				
 			}
 			
+			if (test_b && csv_out == 1 && not_on_limit) fprintf(test, "\",");
+			
 			if (no_compare == 0) {
 				for(i_reg=0; i_reg<regs && no_compare == 0; i_reg++) {
 					if (tmp_per[i_reg] == (double) 100) {
@@ -801,6 +834,7 @@ int main(int argc, char **argv){
 					}
 				}
 			}
+			
 			if ((no_compare == 0 && there_is == 0) || no_compare == 1) {
 				if (work_b) fprintf(workb, " 0\nrun\n");
 			}
