@@ -147,6 +147,14 @@ int main(int argc, char **argv){
 				} else {
 					exit(1);
 				}
+			} else if (strcmp (argv[i], "-scanregs") == 0) {
+				if (argv[i+1] != NULL) {
+					regs = (int) atoi(argv[i+1]);
+					i += 2;
+				} else {
+					printf("--Give the number of registered bit yout want to check.");
+					exit(20);
+				}
 			}
 		}
     } else {
@@ -199,7 +207,12 @@ int main(int argc, char **argv){
 		exit(20);
 	}
 	
-	if (ans == 9) {
+	if (ans != 9 && regs > 1) {
+		fprintf(stderr, "You canot specify number of scan chains withoud using the selection 9.\n");
+		exit(21);
+	}
+	
+	if (ans == 9 && regs <= 1) {
         do {
             printf("--Give the number of registered bit yout want to check:\t");
             scanf("%d", &regs);
@@ -232,7 +245,7 @@ int main(int argc, char **argv){
 		tuples = (unsigned long long int) ((M /*- n*/) + 1);
 	}
 	
-	printf("\n********[%llu] tuples will be proccessed!\n\n\n", tuples-n);
+	if (!(only_cov || only_pat)) printf("\n********[%llu] tuples will be proccessed!\n\n\n", tuples-n);
     
     if (ans == 9) {
         halt = ((int) (n/regs));
@@ -782,7 +795,7 @@ int main(int argc, char **argv){
 		min_cycl_per = (double) 0;
 		bool not_on_limit;
 		
-		for(i=0; i < tuples; i++) {
+		for(i=0; i < tuples && (reached == 0 || debug_mode == 1); i++) {
 			reg_idx = 0;
 			
 			for(i_reg=0; i_reg<regs && no_compare == 0; i_reg++) {
@@ -873,7 +886,7 @@ int main(int argc, char **argv){
 		}
 		
 		if (only_cov) {
-			printf("%.3f", tmp_per[i_reg]);
+			printf("%.3f", min_cycl_per);
 		} else if (only_pat) {
 			printf("%llu", arr1_idx[0]);
 		} else {
